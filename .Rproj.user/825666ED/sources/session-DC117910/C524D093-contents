@@ -1,0 +1,26 @@
+library(rmarkdown)
+library(knitr)
+library(blogdown)
+library(distill)
+
+blogdown::new_site(force = T)
+blogdown::serve_site()
+blogdown::stop_server()
+
+
+x = seq(-5, 5, by = 0.01)
+
+f <- function(x){
+  (3 - 3*x)^2
+}
+library(tidyverse)
+plot(x, f(x))
+
+f(1/3)
+argmin(f(x))
+arg
+optimize(f(x),x)
+?optimize
+optimize(f, x)
+optimize(f(x))
+blogdown::config_netlify()
