@@ -3,7 +3,7 @@
     "path": "C:/Users/evgen/econometrics_2023/Econ_site/content/blog/blog_post_2.Rmd",
     "project_path": "content/blog/blog_post_2.Rmd",
     "type": "r_markdown",
-    "hash": "0",
+    "hash": "134825117",
     "contents": "",
     "dirty": false,
     "created": 1681894464969.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "38,0",
-        "scrollLine": "0"
+        "cursorPosition": "52,67",
+        "scrollLine": "42"
     },
     "folds": "",
-    "lastKnownWriteTime": 1681906141,
+    "lastKnownWriteTime": 1681982310,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1681906141518,
+    "last_content_update": 1681982310397,
     "read_only": false,
     "read_only_alternatives": []
 }
