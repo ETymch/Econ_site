@@ -98,7 +98,7 @@ MontyHall(T)
 ```
 
 ```
-## [1] TRUE
+## [1] FALSE
 ```
 
 ```r
@@ -106,7 +106,7 @@ WinProb(F, 1000)
 ```
 
 ```
-## [1] 0.324
+## [1] 0.319
 ```
 
 ```r
@@ -114,7 +114,7 @@ WinProb(T, 1000)
 ```
 
 ```
-## [1] 0.663
+## [1] 0.637
 ```
 
 Теперь нарисуем, как вероятность выигрыша при смене выбора сходится к своему истинному значению при увеличении числа испытаний. Действительно, для проверки статистических гипотез часто требуется большая выборка:
@@ -132,7 +132,7 @@ data.frame(P = WinProb_K,
            K = seq(1, K, by = 1)) %>%
   mutate(mycolor = ifelse(P > 0.66667, "type1", "type2")) %>%
   ggplot(aes(x = K, y = P)) +
-  geom_segment(aes(x = K, xend = K, y = 0.66667, yend = P, color = mycolor), size = 1.0, alpha = 0.4, show.legend = F) +
+  geom_segment(aes(x = K, xend = K, y = 0.66667, yend = P, color = mycolor), size = 0.7, alpha = 0.4, show.legend = F) +
   geom_hline(yintercept = 0.66667, size = 0.2, alpha = 0.3)  +
   scale_color_carto_d(palette = 'TealRose') +
   theme_minimal(base_family = 'Monoton') +
