@@ -5,8 +5,8 @@
 }
 
 body {
-  font-family: 'HSESans';
+  font-family: 'HSESans', serif;
 }
 h1, h2, h3, h4, h5, h6, .nav, .article-duration, .archive-item-link, .footer {
-  font-family: 'HSESans';
+  font-family: 'HSESans', sans-serif;
 }
