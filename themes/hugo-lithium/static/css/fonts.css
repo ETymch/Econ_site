@@ -1,7 +1,9 @@
 @font-face {
   font-family: 'HSESans';
   src: local('HSESans'), local('HSESans-Regular'),
-       url('../fonts/HSESans-Regular.ttf') format('ttf');
+       url('../fonts/HSESans-Regular.ttf') format('ttf'),
+       url('../fonts/HSESans-Regular.woff') format('woff'),
+       url('../fonts/HSESans-Regular.woff2') format('woff2');
 }
 
 body {
