@@ -1,7 +1,7 @@
 baseurl: /
 languageCode: en-us, ru
 title: ЕТ site
-theme: hugo-lithium
+theme: "hugo-lithium"
 googleAnalytics: ''
 disqusShortname: ''
 ignoreFiles:

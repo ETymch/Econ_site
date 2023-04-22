@@ -6,7 +6,7 @@ library(distill)
 blogdown::new_site(force = T)
 blogdown::serve_site()
 blogdown::stop_server()
-
+blogdown::install_theme(theme = "xianmin/hugo-theme-jane", force = TRUE)
 library(rcartocolor)
 display_carto_pal(7, "TealRose")
 carto_pal(7, 'TealRose')
