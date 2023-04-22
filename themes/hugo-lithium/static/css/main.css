@@ -306,6 +306,11 @@ img {
     font-size: 42px;
   }
 
+  .article-categories {
+  text-transform: uppercase;
+  font-size: 25px;
+  }
+
   .article-duration {
     font-size: 12px;
   }

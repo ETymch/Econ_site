@@ -7,6 +7,9 @@ blogdown::new_site(force = T)
 blogdown::serve_site()
 blogdown::stop_server()
 
+library(rcartocolor)
+display_carto_pal(7, "TealRose")
+carto_pal(7, 'TealRose')
 
 x = seq(-5, 5, by = 0.01)
 
@@ -90,3 +93,15 @@ data.frame(P = WinProb_K,
         plot.background = element_rect(colour = 'white')) +
   labs(title = 'Monty Hall, and Statistics Theory')
 ggsave('monty.png', dpi = 400)
+
+
+# Taylor
+
+library(calculus)
+
+f <- function(x){
+  return(x^2)
+}
+taylor(f, c(x = 2))
+
+derivative(f, c(x = 1))
