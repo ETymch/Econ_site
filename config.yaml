@@ -1,6 +1,6 @@
 baseurl: /
 languageCode: en-us, ru
-title: ЕТ site
+title: Еcon is Fun
 theme: "hugo-lithium"
 googleAnalytics: ''
 disqusShortname: ''
@@ -23,9 +23,6 @@ menu:
     - name: О сайте
       url: /about/
       weight: 3
-    - name: GitHub
-      url: https://github.com/ETymch/Econometrics_2023
-      weight: 4
   footer:
     - name: Categories
       url: "/categories/"
