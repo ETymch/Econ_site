@@ -87,27 +87,6 @@ map <- vect('rwc.shp')
 data <- rio::import('https://github.com/ETymch/Econometrics_2023/blob/main/Datasets/data_reg_cpi.xls?raw=true') %>% 
   dplyr::glimpse() %>%
   na.omit()
-```
-
-```
-## New names:
-## • `` -> `...2`
-## • `` -> `...3`
-## • `` -> `...4`
-## • `` -> `...5`
-```
-
-```
-## Rows: 99
-## Columns: 5
-## $ `Индексы потребительских цен на товары и услуги (процент)` <chr> NA, NA, NA,…
-## $ ...2                                                       <chr> NA, NA, NA,…
-## $ ...3                                                       <chr> "2023", "К …
-## $ ...4                                                       <chr> "2023", "К …
-## $ ...5                                                       <chr> "2023", "К …
-```
-
-```r
 colnames(data)[c(1,5)] <- c('NL_NAME_1', 'ИПЦ')
 data <- data %>% select(NL_NAME_1, ИПЦ) %>%
   mutate(ИПЦ = as.numeric(ИПЦ) - 100)

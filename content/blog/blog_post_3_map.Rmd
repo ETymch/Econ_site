@@ -72,7 +72,7 @@ map <- vect('rwc.shp')
 
 Для примера совмещения карт c данными Росстата мы возьмём статистику ЕМИСС об [Индексе Потребительских цен.](https://www.fedstat.ru/indicator/31074)
 
-```{r}
+```{r include=FALSE}
 data <- rio::import('https://github.com/ETymch/Econometrics_2023/blob/main/Datasets/data_reg_cpi.xls?raw=true') %>% 
   dplyr::glimpse() %>%
   na.omit()
