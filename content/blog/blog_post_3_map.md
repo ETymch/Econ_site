@@ -134,9 +134,9 @@ ggplot() +
         axis.title.x=element_blank(),
         axis.title.y=element_blank(),legend.position="bottom",
         legend.title=element_blank(),
-        plot.title = element_text(family = 'Rampart One', size = 20, hjust = 0.5, color = '#d0587e'),
-        plot.subtitle = element_text(family = 'Rampart One', size = 15, hjust = 0.5, color = '#d0587e'),
-        legend.text = element_text(family = 'Rampart One', size = 13, color = '#d0587e')
+        plot.title = element_text(family = 'Rampart One', size = 23, hjust = 0.5, color = '#d0587e'),
+        plot.subtitle = element_text(family = 'Rampart One', size = 18, hjust = 0.5, color = '#d0587e'),
+        legend.text = element_text(family = 'Rampart One', size = 16, color = '#d0587e')
   ) +
   labs(title = 'Рост цен в регионах России',
        subtitle = 'март 2022 - март 2023')
