@@ -11,7 +11,9 @@ tags: ["gamt", 'ggplot']
 > В этой статье я не пытаюсь никого оскорбить. Эта статья про работу с данными и красивые картинки в форме карт.
 
 <center>
-![Картинка](https://github.com/ETymch/Econometrics_2023/blob/main/Pics/map.gif?raw=true)
+
+![Картинка!](https://github.com/ETymch/Econometrics_2023/blob/main/Pics/map.gif?raw=true)
+
 </center>
 
 Для работты нам понадобятся библиотеки:
