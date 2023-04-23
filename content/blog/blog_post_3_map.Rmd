@@ -70,7 +70,7 @@ map <- vect('rwc.shp')
 
 ## Графики в ggplot
 
-Для примера совмещения карт c данными Росстата мы возьмём статистику ЕМИСС об [Индексе Потребительских цен.](https://www.fedstat.ru/indicator/31074)
+Для примера совмещения карт c данными Росстата мы возьмём статистику ЕМИСС об [индексе потребительских цен.](https://www.fedstat.ru/indicator/31074)
 
 ```{r include=FALSE}
 data <- rio::import('https://github.com/ETymch/Econometrics_2023/blob/main/Datasets/data_reg_cpi.xls?raw=true') %>% 
@@ -105,7 +105,7 @@ ggplot() +
         legend.text = element_text(family = 'Rampart One', size = 15, color = '#d0587e')
   ) +
   labs(title = 'Рост цен в регионах России',
-       subtitle = 'март 2022 - март 2023')
+       subtitle = 'март 2022 - март 2023, (%)')
 ```
 
 Ура! Теперь рисовать статистические карты в **R** - проще простого. Надеюсь, вам помог этот текст.

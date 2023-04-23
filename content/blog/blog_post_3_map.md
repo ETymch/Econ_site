@@ -80,7 +80,7 @@ map <- vect('rwc.shp')
 
 ## Графики в ggplot
 
-Для примера совмещения карт c данными Росстата мы возьмём статистику ЕМИСС об [Индексе Потребительских цен.](https://www.fedstat.ru/indicator/31074)
+Для примера совмещения карт c данными Росстата мы возьмём статистику ЕМИСС об [индексе потребительских цен.](https://www.fedstat.ru/indicator/31074)
 
 
 ```r
@@ -118,7 +118,7 @@ ggplot() +
         legend.text = element_text(family = 'Rampart One', size = 16, color = '#d0587e')
   ) +
   labs(title = 'Рост цен в регионах России',
-       subtitle = 'март 2022 - март 2023')
+       subtitle = 'март 2022 - март 2023, (%)')
 ```
 
 <img src="/blog/blog_post_3_map_files/figure-html/unnamed-chunk-9-1.png" width="672" />
