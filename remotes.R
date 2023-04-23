@@ -19,6 +19,22 @@ f <- function(x){
 library(tidyverse)
 plot(x, f(x))
 
+friends <- c('Боря', 'Настя', 'Алина')
+
+str(friends)
+
+data <- read.csv('https://raw.githubusercontent.com/ETymch/Econometrics_2023/main/Datasets/laptop_price.csv')
+library(tidyverse)
+data %>%
+  filter(Company == 'HP')
+data
+?integrate
+f <- function(x){
+  return(exp(2*x+1))
+}
+
+integrate(f, -Inf, 0)
+
 f(1/3)
 argmin(f(x))
 arg
@@ -105,3 +121,9 @@ f <- function(x){
 taylor(f, c(x = 2))
 
 derivative(f, c(x = 1))
+
+# Задача Бюффона
+## https://en.wikipedia.org/wiki/Buffon%27s_needle_problem
+
+# Map project
+

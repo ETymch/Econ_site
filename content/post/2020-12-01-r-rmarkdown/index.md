@@ -140,19 +140,29 @@ data$Геймер
 ```r
 data <- read.csv('https://raw.githubusercontent.com/ETymch/Econometrics_2023/main/Datasets/laptop_price.csv')
 data %>%
-  group_by(Company) %>% # Упорядочить таблицу по алфавиту, используя название фирмы изготовителя
+  arrange(Company) %>% # Упорядочить таблицу по алфавиту, используя название фирмы изготовителя
   head()
-## # A tibble: 6 × 13
-## # Groups:   Company [3]
-##   laptop_ID Company Product  TypeName Inches ScreenResolution Cpu   Ram   Memory
-##       <int> <chr>   <chr>    <chr>     <dbl> <chr>            <chr> <chr> <chr> 
-## 1         1 Apple   MacBook… Ultrabo…   13.3 IPS Panel Retin… Inte… 8GB   128GB…
-## 2         2 Apple   Macbook… Ultrabo…   13.3 1440x900         Inte… 8GB   128GB…
-## 3         3 HP      250 G6   Notebook   15.6 Full HD 1920x10… Inte… 8GB   256GB…
-## 4         4 Apple   MacBook… Ultrabo…   15.4 IPS Panel Retin… Inte… 16GB  512GB…
-## 5         5 Apple   MacBook… Ultrabo…   13.3 IPS Panel Retin… Inte… 8GB   256GB…
-## 6         6 Acer    Aspire 3 Notebook   15.6 1366x768         AMD … 4GB   500GB…
-## # ℹ 4 more variables: Gpu <chr>, OpSys <chr>, Weight <chr>, Price_euros <dbl>
+##   laptop_ID Company         Product  TypeName Inches
+## 1         6    Acer        Aspire 3  Notebook   15.6
+## 2        10    Acer         Swift 3 Ultrabook   14.0
+## 3        37    Acer        Aspire 3  Notebook   15.6
+## 4        44    Acer Aspire A515-51G  Notebook   15.6
+## 5        52    Acer Aspire A515-51G  Notebook   15.6
+## 6        55    Acer        Aspire 3  Notebook   15.6
+##              ScreenResolution                        Cpu Ram    Memory
+## 1                    1366x768    AMD A9-Series 9420 3GHz 4GB 500GB HDD
+## 2 IPS Panel Full HD 1920x1080 Intel Core i5 8250U 1.6GHz 8GB 256GB SSD
+## 3                    1366x768 Intel Core i3 7130U 2.7GHz 4GB   1TB HDD
+## 4 IPS Panel Full HD 1920x1080 Intel Core i5 8250U 1.6GHz 4GB 256GB SSD
+## 5 IPS Panel Full HD 1920x1080 Intel Core i7 8550U 1.8GHz 8GB 256GB SSD
+## 6                    1366x768 Intel Core i3 7100U 2.4GHz 4GB   1TB HDD
+##                      Gpu      OpSys Weight Price_euros
+## 1          AMD Radeon R5 Windows 10  2.1kg         400
+## 2 Intel UHD Graphics 620 Windows 10  1.6kg         770
+## 3  Intel HD Graphics 620      Linux  2.1kg         367
+## 4 Intel UHD Graphics 620 Windows 10  2.2kg         682
+## 5   Nvidia GeForce MX150 Windows 10  2.2kg         841
+## 6  Intel HD Graphics 620 Windows 10  2.4kg         384
 ```
 
 Когда мы пишем код в **R** мы часто используем `%>%` - трубочки. Всё просто: допустим мы хотим последовательно применить к объекту несколько функций. Помните, в курсе по математике были вложенные функции `\(f(g(x))\)`? Тогда это значило, что к объекту `\(x\)` мы сначала применяли функцию `\(g\)`, затем функцию `\(f\)`. При помощи `%>%` мы можем написать это так: `x %>% g() %>% f()`. Хороший тон - писать такие функции в столбик - тогда код удобно читать. Если мы захотим последовательно применить много функций (для манипуляции сложным объектом), то код, написанный первым подходом становится нечитаемым. Например: `datatable(head(group_by(Data, Company)))`.
