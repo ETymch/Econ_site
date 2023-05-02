@@ -13,7 +13,7 @@ tags: ['Статистика', 'Теорвер']
 * Вероятности, распределения.
 * Независимость.
 * Условные вероятности, условные распределения.
-* Культурный минимум: ЦПТ и ЗБЧ.
+* ЦПТ и ЗБЧ.
 * Бутстрап.
 * Кейс: школьный эксперимент.
 
@@ -78,14 +78,7 @@ purrr::rbernoulli(5, p = 0.7)
 ```
 
 ```
-## Warning: `rbernoulli()` was deprecated in purrr 1.0.0.
-## This warning is displayed once every 8 hours.
-## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
-## generated.
-```
-
-```
-## [1] TRUE TRUE TRUE TRUE TRUE
+## [1]  TRUE  TRUE  TRUE FALSE FALSE
 ```
 
 ### Работает ли ЗБЧ?
@@ -95,7 +88,7 @@ purrr::rbernoulli(5, p = 0.7)
 dist_kisses <- function(n,p,k){ # Создадим функцию
   means <- c() # means - пустой вектор
   for (i in 1:k){ # Мы k раз
-    means[i] <- rbinom(n = n, prob = p, size = 1) %>% mean() # добавляем в вектор means долю успехов 
+    means[i] <- rbinom(n = n, prob = p, size = k) %>% mean() # добавляем в вектор means долю успехов 
   } # в n испытаниях по схеме Бернулли.
   return(means) # и возвращаем вектор means с n наблюдениями
 }
@@ -107,7 +100,7 @@ dist_kisses <- function(n,p,k){ # Создадим функцию
 ```r
 n = 100
 p = 0.7
-k = 500
+k = 1000
 
 dist_kisses(n,p,k) %>% hist(main = 'Histogram of Kisses')
 ```
@@ -122,7 +115,7 @@ dist_kisses(n,p,k) %>% mean()
 ```
 
 ```
-## [1] 0.69788
+## [1] 700.0196
 ```
 
 Давайте докажем, что при росте `\(k\)` среднее отклонение оценки параметра `\(p\)` от его реального значения **уменьшается**
@@ -140,8 +133,8 @@ error_mean <- function(n,p,k){
 
 
 ```r
-convergence_proof <- error_mean(40, 0.7, 500) # проведём эксперимент с поцелуями 50 девушек/парней 1000 раз.
-mean(convergence_proof[100:200]) <= mean(convergence_proof[400:500]) # Чем больше экспериментов мы проводим - тем выше точность.
+convergence_proof <- error_mean(40, 0.7, 1000) # проведём эксперимент с поцелуями 50 девушек/парней 1000 раз.
+mean(convergence_proof[100:200]) <= mean(convergence_proof[900:1000]) # Чем больше экспериментов мы проводим - тем выше точность.
 ```
 
 ```
@@ -264,12 +257,12 @@ descdist(incomes_subsamples, discrete = F, boot = 500)
 ```
 ## summary statistics
 ## ------
-## min:  -3.505253   max:  3.987755 
-## median:  -0.01403362 
-## mean:  9.940026e-16 
+## min:  -4.343044   max:  3.977849 
+## median:  -0.01524339 
+## mean:  8.315866e-16 
 ## estimated sd:  1 
-## estimated skewness:  0.07531198 
-## estimated kurtosis:  2.985613
+## estimated skewness:  0.06920769 
+## estimated kurtosis:  3.035462
 ```
 Дейстаительно, наш результат - нормальное распределение с параметрами (0,1). Чтобы определить параметры распределения, воспользуемся функцией `fitdist`. По умолчанию она максимизирует функцию правдоподобия при условии реализовавшихся данных. Этот метод мы изучим чуть позже, пока отметим, что в нашем случае (нормальное распределение) идея в следующем:
 
@@ -285,7 +278,7 @@ fit_normal %>% summary()
 ## Fitting of the distribution ' norm ' by maximum likelihood 
 ## Parameters : 
 ##          estimate  Std. Error
-## mean 9.940026e-16 0.009999500
+## mean 8.315866e-16 0.009999500
 ## sd   9.999500e-01 0.007070682
 ## Loglikelihood:  -14188.89   AIC:  28381.77   BIC:  28396.19 
 ## Correlation matrix:
@@ -315,8 +308,8 @@ bootdist(fit_normal) %>%
 ```
 ## Parametric bootstrap medians and 95% percentile CI 
 ##            Median        2.5%     97.5%
-## mean 0.0000382966 -0.01889678 0.0196448
-## sd   1.0000356277  0.98571604 1.0146433
+## mean -0.000134218 -0.01927927 0.0216554
+## sd    0.999672023  0.98570740 1.0147971
 ```
 
 500 подвыборок с возвращением. Для каждой подвыборки счиатем статистику среднего и стандартного отклонения, получаем доваерительные интервалы.
@@ -438,7 +431,7 @@ sum(rp_result > mean(treatment$growth_end) - mean(notreatment$growth_end)) / 100
 ```
 
 ```
-## [1] 0.026
+## [1] 0.022
 ```
 
 Значим ли такой результат?

@@ -27,7 +27,7 @@ font_add_google('Lobster')
 * Вероятности, распределения.
 * Независимость.
 * Условные вероятности, условные распределения.
-* Культурный минимум: ЦПТ и ЗБЧ.
+* ЦПТ и ЗБЧ.
 * Бутстрап.
 * Кейс: школьный эксперимент.
 
@@ -86,7 +86,7 @@ $$\frac{(X_1 + X_2 + ... + X_n) - n \mu}{\sqrt{n}\sigma} \to^d N(0, 1)$$
 
 Знакомство с генератором случайных чисел:
 
-```{r}
+```{r, message=FALSE, error=FALSE, warning=FALSE}
 purrr::rbernoulli(5, p = 0.7)
 ```
 
@@ -96,7 +96,7 @@ purrr::rbernoulli(5, p = 0.7)
 dist_kisses <- function(n,p,k){ # Создадим функцию
   means <- c() # means - пустой вектор
   for (i in 1:k){ # Мы k раз
-    means[i] <- rbinom(n = n, prob = p, size = 1) %>% mean() # добавляем в вектор means долю успехов 
+    means[i] <- rbinom(n = n, prob = p, size = k) %>% mean() # добавляем в вектор means долю успехов 
   } # в n испытаниях по схеме Бернулли.
   return(means) # и возвращаем вектор means с n наблюдениями
 }
@@ -107,7 +107,7 @@ dist_kisses <- function(n,p,k){ # Создадим функцию
 ```{r}
 n = 100
 p = 0.7
-k = 500
+k = 1000
 
 dist_kisses(n,p,k) %>% hist(main = 'Histogram of Kisses')
 ```
@@ -131,8 +131,8 @@ error_mean <- function(n,p,k){
 ```
 
 ```{r}
-convergence_proof <- error_mean(40, 0.7, 500) # проведём эксперимент с поцелуями 50 девушек/парней 1000 раз.
-mean(convergence_proof[100:200]) <= mean(convergence_proof[400:500]) # Чем больше экспериментов мы проводим - тем выше точность.
+convergence_proof <- error_mean(40, 0.7, 1000) # проведём эксперимент с поцелуями 50 девушек/парней 1000 раз.
+mean(convergence_proof[100:200]) <= mean(convergence_proof[900:1000]) # Чем больше экспериментов мы проводим - тем выше точность.
 ```
 
 ### Задание:
