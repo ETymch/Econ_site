@@ -94,7 +94,7 @@ purrr::rbernoulli(5, p = 0.7)
 ```
 
 ```
-## [1] FALSE  TRUE FALSE  TRUE  TRUE
+## [1]  TRUE  TRUE FALSE  TRUE FALSE
 ```
 
 ### Работает ли ЗБЧ?
@@ -126,7 +126,7 @@ data.frame(P = dist_kisses(n,p,k),
   geom_hline(yintercept = 0.7, size = 0.2, alpha = 0.3)  +
   scale_color_carto_d(palette = 'TealRose') +
   theme_minimal(base_family = 'Pacifico') +
-  theme(plot.title = element_text(hjust = 0.5, size = 32),
+  theme(plot.title = element_text(hjust = 0.5, size = 29),
         axis.title.x= element_text(size = 28),
         axis.title.y = element_text(size = 28),
         axis.text.x = element_text(size = 28),
@@ -146,7 +146,7 @@ dist_kisses(n,p,k) %>% mean()
 ```
 
 ```
-## [1] 0.6995532
+## [1] 0.6997874
 ```
 
 ### Задание:
@@ -176,7 +176,7 @@ income %>%
                    col = 'skyblue',
                    fill = 'green', alpha = 0.3) +
     scale_x_continuous(breaks = breaks_width(50000)) +
-    theme_minimal(base_family = 'Lobster') +
+    theme_minimal(base_family = 'Lobster', base_size = 19) +
     labs(x = 'Доходы', y = 'Число наблюдений', title = 'Распределение доходов в выборке')
 ```
 
@@ -224,7 +224,7 @@ fitdistrplus::plotdist(income, histo = T, demp = T)
 `$$p(a \leq x \leq b) = \int_{a}^bf(x)dx$$`
 ### Вопрос
 
-> `\(f(x)\)` - какое-то дискретное распределение. Какова вероятность, что `\(a \leq X \leq b\)` в терминах кумулятивной функции распределения?  
+> `\(f(x)\)` - какое-то дискретное распределение. Какова вероятность, что `\(a \leq X \leq b\)` в терминах кумулятивной функции распределения? 
 
 Теперь посмотрим на нормальизованное распределение:
 
@@ -265,12 +265,12 @@ descdist(incomes_subsamples, discrete = F, boot = 500)
 ```
 ## summary statistics
 ## ------
-## min:  -4.108986   max:  4.034661 
-## median:  -0.007786728 
-## mean:  3.315315e-16 
+## min:  -3.438588   max:  3.958286 
+## median:  -0.02129574 
+## mean:  -1.184175e-15 
 ## estimated sd:  1 
-## estimated skewness:  0.02920695 
-## estimated kurtosis:  3.001191
+## estimated skewness:  0.06963523 
+## estimated kurtosis:  2.9345
 ```
 Дейстаительно, наш результат - нормальное распределение с параметрами (0,1). Чтобы определить параметры распределения, воспользуемся функцией `fitdist`. По умолчанию она максимизирует функцию правдоподобия при условии реализовавшихся данных. Этот метод мы изучим чуть позже, пока отметим, что в нашем случае (нормальное распределение) идея в следующем:
 
@@ -285,9 +285,9 @@ fit_normal %>% summary()
 ```
 ## Fitting of the distribution ' norm ' by maximum likelihood 
 ## Parameters : 
-##          estimate  Std. Error
-## mean 3.315315e-16 0.009999500
-## sd   9.999500e-01 0.007070682
+##           estimate  Std. Error
+## mean -1.184175e-15 0.009999500
+## sd    9.999500e-01 0.007070682
 ## Loglikelihood:  -14188.89   AIC:  28381.77   BIC:  28396.19 
 ## Correlation matrix:
 ##      mean sd
@@ -315,9 +315,9 @@ bootdist(fit_normal) %>%
 
 ```
 ## Parametric bootstrap medians and 95% percentile CI 
-##             Median       2.5%      97.5%
-## mean -0.0005008785 -0.0191084 0.01903214
-## sd    0.9997037223  0.9866970 1.01442948
+##             Median        2.5%     97.5%
+## mean -0.0003607728 -0.01959104 0.0187537
+## sd    1.0000077090  0.98618912 1.0135025
 ```
 
 500 подвыборок с возвращением. Для каждой подвыборки счиатем статистику среднего и стандартного отклонения, получаем доваерительные интервалы.
@@ -358,7 +358,7 @@ data %>% dplyr::select(math1, math2, math3) %>%
   melt %>%
   ggplot(aes(x = value, fill = variable, color = variable)) +
   geom_density(alpha = 0.6) +
-  theme_minimal(base_family = 'Lobster') +
+  theme_minimal(base_family = 'Lobster', base_size = 25) +
   scale_fill_carto_d(palette = 'Safe') +
   scale_color_carto_d(palette = 'Safe') +
   theme(plot.title = element_text(hjust = 0.5, face = 'bold'),
@@ -422,7 +422,7 @@ rp_result <- random_permutation(data, 1200, 1000)
 data.frame(rp_result = rp_result) %>%
   ggplot(aes(x = rp_result)) +
   geom_density(alpha = 0.6, fill = '#e5b9ad', color = '#e5b9ad', size = 2) +
-  theme_minimal(base_family = 'Lobster') +
+  theme_minimal(base_family = 'Pacifico', base_size = 25) +
   geom_vline(xintercept = mean(treatment$growth_end) - mean(notreatment$growth_end), col = 'lightgreen', alpha = 0.5, size = 2)+
   labs(title = 'Результаты теста',
        x = 'Разница в результатах между финальным и первым тестом',

@@ -79,7 +79,7 @@ ggplot(data, aes(x = x, y = y)) +   # Create the plot
 # Fitting Distributions #
 #########################
 
-data <- read.csv('201709-CAH_PulseOfTheNation.csv')
+data <- read.csv('https://raw.githubusercontent.com/ETymch/Econometrics_2023/main/Datasets/201709-CAH_PulseOfTheNation.csv')
 
 income <- data$Income %>%
   na.omit() %>%
@@ -126,6 +126,19 @@ income %>%
     scale_x_continuous(breaks = breaks_width(50000)) +
     theme_minimal()
 
+sampling_means <- function(data, n, k){
+  means <- c()
+  for (i in 1:k){
+    means[i] <- sample(data, n, replace = T) %>% mean
+  }
+  means <- (means - mean(means)) / sd(means)
+  means
+}
+
+sampling_means(income, 1000, 10000) %>%
+  hist(main = 'CLT works!')
+
+incomes_subsamples <- sampling_means(income, 1000, 10000)
 
 # О чём спросить себя?
 
@@ -134,12 +147,17 @@ income %>%
 # * Один пик или несколько? и т.д.
 
 str(income)
+par(mfrow = c(1,1))
+fitdistrplus::plotdist(incomes_subsamples, histo = T, demp = T)
 fitdistrplus::plotdist(income, histo = T, demp = T)
-
 # Cullen and Frey graph
 # Этот график помогает оценить, насколько данные ассиметричны и то, насколько острый у них пик.
 
+library(fitdistrplus)
+
 descdist(income, discrete = F, boot = 500) # Распределение доходов похоже скорее на Гамма-распределение, чем на Логнормальное.
+
+descdist(incomes_subsamples, discrete = F, boot = 500)
 
 # Чтобы понять, какое распределение лучше описывает даныне, нужно:
 # Оценить параметры этих распределений и посмотреть, какое теоретическое распределение лучше описывает эмпирику.
@@ -148,6 +166,10 @@ descdist(income, discrete = F, boot = 500) # Распределение дохо
 # P-P plot - сравнение PMF.
 # Goodness of fit measures.
 ?fitdist
+fit_normal <- fitdist(incomes_subsamples, 'norm')
+fit_normal %>% summary()
+
+
 fit_weibull <- fitdist(income, 'weibull') # MLE! Кстати, тут можно дать вводные про разные методы оценки с математикой
 fit_weibull %>% summary()
 str(fit_weibull)
@@ -173,7 +195,7 @@ gofstat(dists, fitnames = plot.legend)
 
 # Advanced stuff
 
-bootdist(fit_weibull) %>%
+bootdist(fit_normal) %>%
   summary(niter = 500)
 
 # Functional Programming
