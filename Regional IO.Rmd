@@ -1,0 +1,30 @@
+---
+title: "IO"
+author: "E. Tymchenko"
+date: "`r Sys.Date()`"
+output: html_document
+---
+# Regional Input-output
+
+2 main ideas:
+
+* Flegg's location quotient
+* 2d location quotient - generally better
+
+$x_i^r$ - выпуск сектора $i$ в регионе $r$,
+
+$x^r$ - выпуск региона $r$
+
+$x_i^n$ - выпуск сектора $i$ для всей страны
+
+$x^n$ - выпуск всей старны.
+
+Пока идея максимально простая и не на коаок открытие не тянет. Региональный коэффициент для сектора $i$ и регорна $r$ таким образом:
+
+$$SLQ_i = LQ_i^r = (x_i^r / x^r) / (x_i^n / x^n)$$
+
+или просто:
+
+$$SLQ_i = LQ_i^r = (x_i^r / x_i^n) / (x_r / x^n)$$
+
+
