@@ -81,7 +81,7 @@ price %>%
                    col = 'skyblue',
                    fill = 'green', alpha = 0.3) +
     theme_minimal(base_family = 'Lobster', base_size = 19) +
-    labs(x = 'Доходы', y = 'Число наблюдений', title = 'Распределение цен в выборке')
+    labs(x = 'Цены', y = 'Число наблюдений', title = 'Распределение цен в выборке')
 ```
 
 <img src="/post/Lecture-2/Lec-2_files/figure-html/unnamed-chunk-5-1.png" width="672" />
@@ -101,7 +101,7 @@ odometer %>%
                  fill = 'orange', alpha = 0.3) +
   xlim(0,250000) +
   theme_minimal(base_family = 'Lobster', base_size = 19) +
-  labs(x = 'Доходы', y = 'Число наблюдений', title = 'Распределение пробега в выборке')
+  labs(x = 'Пробег', y = 'Число наблюдений', title = 'Распределение пробега в выборке')
 ```
 
 <img src="/post/Lecture-2/Lec-2_files/figure-html/unnamed-chunk-6-1.png" width="672" />
