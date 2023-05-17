@@ -247,8 +247,8 @@ dat_1 %>%
 Что значит **хорошо**? Мы хотим, чтобы оценка `\(\hat{price_i}\)` была как можно ближе к наблюдаемому значению `\(price_i\)` для всех наблюдений `\(i\)`.
 Желание понятное, но вот как его добиться - не очень ясно. Давайте попробуем формализовать. Мы хотим, чтобы расстояние от точек, которые мы спрогнозировали на основании модели, до точек, отражающих реальные данные, было как можно меньшим. Т.е.
 `$$|price_i - \hat{price_i}|$$` - было как можно меньшим для всех наблюдений `\(i\)`. Подставим формулу нашей модели:
-$ \hat{price_i} = \hat{\beta_0} + \hat{\beta_1} o_i $ вместо `\(\hat{price_i}\)` и подберём такие `\(\hat{\beta_1},\hat{\beta_2}\)`, чтобы сумма расстояний между оценками и реальными значениями была минимальной:
-`$$\min_{\hat{\beta_1}\hat{\beta_1}}\sum_i{|price_i - (\hat{\beta_0} + \hat{\beta_1} o_i)|}$$`
+`\(\hat{price_i} = \hat{\beta_0} + \hat{\beta_1} o_i\)` вместо `\(\hat{price_i}\)` и подберём такие `\(\hat{\beta_1},\hat{\beta_2}\)`, чтобы сумма расстояний между оценками и реальными значениями была минимальной:
+`$$\min_{\hat{\beta_0}\hat{\beta_1}}\sum_i{|price_i - (\hat{\beta_0} + \hat{\beta_1} o_i)|}$$`
 
 Проблема в том, что данная задача выглядит просто но не решается аналитически. Поэтому исторически статистики пришли к тому, что можно немного изменить задачу при всё тех же предпосылках.
 
@@ -273,8 +273,8 @@ $$
 $$
 (Y,X) =
 \begin{pmatrix}
-Y_1 & X^1_1 & \cdots & X^k_1 \\
-\vdots & \vdots &\ddots & \vdots \\
+Y_1 & X^1_1 & \cdots & X^k_1 \\\\
+\vdots & \vdots &\ddots & \vdots \\\\
 Y_n & X^1_n & \cdots & X^k_n
 \end{pmatrix}
 $$
@@ -283,32 +283,30 @@ $$
 
 $$
 \begin{pmatrix}
-Y_1 \\
-Y_2 \\
-\vdots \\
+Y_1 \\\\
+Y_2 \\\\
+\vdots \\\\
 Y_n
-\end{pmatrix}
-=
+\end{pmatrix} =
 \begin{pmatrix} 
-X^1_1 & \cdots & X^k_1 \\
-X^1_2 & \cdots & X^k_2 \\
-\vdots & \ddots & \vdots \\
+X^1_1 & \cdots & X^k_1 \\\\
+X^1_2 & \cdots & X^k_2 \\\\
+\vdots & \ddots & \vdots \\\\
 X^1_n & \cdots & X^k_n
 \end{pmatrix}
 \begin{pmatrix}
-\beta_1 \\
-\beta_2 \\
-\vdots \\
+\beta_1 \\\\
+\beta_2 \\\\
+\vdots \\\\
 \beta_k
-\end{pmatrix}
-+
+\end{pmatrix}+
 \begin{pmatrix}
-e_1 \\
-e_2 \\
-\vdots \\
+e_1 \\\\
+e_2 \\\\
+\vdots \\\\
 e_n
 \end{pmatrix}
-= X\beta + e
+= X \beta + e
 $$
 
 Решим оптимизационную задачу:
@@ -319,9 +317,9 @@ $$
 
 $$
 \begin{align}
-0 \\
-&= \frac{d}{d\hat{\beta}}[(Y - X\hat{\beta})^2] \\
-&= \frac{d}{d\hat{\beta}}[Y^2 - 2\hat{\beta}'X'Y + \hat{\beta}'X'X\hat{\beta}'] \\
+0 \\\\
+&= \frac{d}{d\hat{\beta}}[(Y - X\hat{\beta})^2] \\\\
+&= \frac{d}{d\hat{\beta}}[Y^2 - 2\hat{\beta}'X'Y + \hat{\beta}'X'X\hat{\beta}'] \\\\
 &= 0 - 2X'Y + 2X'X\hat{\beta}
 \end{align}
 $$
@@ -380,11 +378,11 @@ e_hat <- lwage - y_hat # Ошибки
 
 $$
 \begin{align}
-\mathbb{E}(X'e) \\
-&= \mathbb{E}[X'(Y - X\beta)] \\
-&= \mathbb{E}[X'Y - X'X(X'X)^{-1}X'Y] \\
-&= \mathbb{E}[X'Y - X'Y] \\
-&= 0 \\
+\mathbb{E}(X'e) \\\\
+&= \mathbb{E}[X'(Y - X\beta)] \\\\
+&= \mathbb{E}[X'Y - X'X(X'X)^{-1}X'Y] \\\\
+&= \mathbb{E}[X'Y - X'Y] \\\\
+&= 0 \\\\
 &= \mathbb{E}[e]
 \end{align}
 $$
@@ -409,10 +407,10 @@ $$
 $$
 \mathbb{E}[Y|X] =
 \begin{pmatrix}
-\vdots \\ \mathbb{E}[Y_i|X] \\ \vdots 
+\vdots \\\\ \mathbb{E}[Y_i|X] \\\\ \vdots 
 \end{pmatrix} =
 \begin{pmatrix}
-\vdots \\ X_i\beta \\ \vdots 
+\vdots \\\\ X_i\beta \\\\ \vdots 
 \end{pmatrix} =
 X\beta
 $$
@@ -420,10 +418,10 @@ $$
 $$
 \mathbb{E}[e|X] =
 \begin{pmatrix}
-\vdots \\ \mathbb{E}[e_i|X] \\ \vdots 
+\vdots \\\\ \mathbb{E}[e_i|X] \\\\ \vdots 
 \end{pmatrix} =
 \begin{pmatrix}
-\vdots \\ \mathbb{E}[e_i|X_i] \\ \vdots 
+\vdots \\\\ \mathbb{E}[e_i|X_i] \\\\ \vdots 
 \end{pmatrix} =
 0
 $$
@@ -432,9 +430,9 @@ $$
 
 $$
 \begin{align}
-\mathbb{E}[\hat{\beta}|X] \\
-&=(X'X)^{-1}X'\mathbb{E}[Y|X] \\
-&=(X'X)^{-1}X'X\beta \\
+\mathbb{E}[\hat{\beta}|X] \\\\
+&=(X'X)^{-1}X'\mathbb{E}[Y|X] \\\\
+&=(X'X)^{-1}X'X\beta \\\\
 &=\beta
 \end{align}
 $$
