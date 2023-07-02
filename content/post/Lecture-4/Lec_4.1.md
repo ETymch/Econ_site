@@ -18,6 +18,8 @@ library(reshape2)
 
 # Данные
 
+Сегодня мы построим модель, которая позволит диагностировать сахарный диабет, на основании различных данных о пациенте.
+
 
 ```r
 dta <- read_csv('https://raw.githubusercontent.com/ETymch/Econometrics_2023/main/Datasets/framingham.csv')
@@ -26,14 +28,16 @@ test <- sample_n(dta, 800) # тестовая выборка. На ней мы �
 train <- setdiff(dta, test) # на этой выборке мы будем оценивать модели
 ```
 
-Первый график:
+### Почему в данном случае МНК - не лучший вариант для оценки параметров?
+
+Наиболее значимым фактором для постановки такого диагноза является уровень глюкозы в крови. Построим график зависимости диагноза от кровня глюкозы:
 
 
 ```r
 dta %>%
   ggplot(aes(x = glucose, y = diabetes)) +
   geom_point() +
-  geom_smooth(method = 'lm') +
+  geom_smooth(method = 'lm') + # добавим линию, оценённую с помощью МНК
   geom_vline(xintercept = 99, color = 'red') + # Верхняя граница нормы
   theme_ipsum() +
   labs(x = 'Уровень глюкозы в крови, мг./Дл.',
@@ -42,7 +46,7 @@ dta %>%
 
 <img src="/post/Lecture-4/Lec_4.1_files/figure-html/unnamed-chunk-3-1.png" width="672" />
 
-Линия плохо описывает взаимосвязь. Возможно, такая форма лучше описывает зависимость?
+Линия плохо описывает взаимосвязь. Возможно, такая форма лучше?
 
 
 ```r
@@ -75,18 +79,18 @@ stargazer(mod_ols, type = 'html', header = F)
 <tr><td colspan="2" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">glucose</td><td>0.004<sup>***</sup></td></tr>
 <tr><td style="text-align:left"></td><td>(0.0001)</td></tr>
 <tr><td style="text-align:left"></td><td></td></tr>
-<tr><td style="text-align:left">Constant</td><td>-0.312<sup>***</sup></td></tr>
+<tr><td style="text-align:left">Constant</td><td>-0.316<sup>***</sup></td></tr>
 <tr><td style="text-align:left"></td><td>(0.008)</td></tr>
 <tr><td style="text-align:left"></td><td></td></tr>
-<tr><td colspan="2" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">Observations</td><td>3,129</td></tr>
-<tr><td style="text-align:left">R<sup>2</sup></td><td>0.371</td></tr>
-<tr><td style="text-align:left">Adjusted R<sup>2</sup></td><td>0.371</td></tr>
-<tr><td style="text-align:left">Residual Std. Error</td><td>0.131 (df = 3127)</td></tr>
-<tr><td style="text-align:left">F Statistic</td><td>1,844.903<sup>***</sup> (df = 1; 3127)</td></tr>
+<tr><td colspan="2" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">Observations</td><td>3,114</td></tr>
+<tr><td style="text-align:left">R<sup>2</sup></td><td>0.375</td></tr>
+<tr><td style="text-align:left">Adjusted R<sup>2</sup></td><td>0.375</td></tr>
+<tr><td style="text-align:left">Residual Std. Error</td><td>0.127 (df = 3112)</td></tr>
+<tr><td style="text-align:left">F Statistic</td><td>1,869.001<sup>***</sup> (df = 1; 3112)</td></tr>
 <tr><td colspan="2" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left"><em>Note:</em></td><td style="text-align:right"><sup>*</sup>p<0.1; <sup>**</sup>p<0.05; <sup>***</sup>p<0.01</td></tr>
 </table>
 
-Но как её интерпретировать? Что значит отрицательный `intercept`. Если человек не сдавал анализ на глюкозу, его заболеваемость отрицательная?
+Но как её интерпретировать? Что значит отрицательный `intercept`? Если человек не сдавал анализ на глюкозу, его заболеваемость отрицательная? Также, вспомните [Теорему Гауccа-Маркова](https://ru.wikipedia.org/wiki/%D0%A2%D0%B5%D0%BE%D1%80%D0%B5%D0%BC%D0%B0_%D0%93%D0%B0%D1%83%D1%81%D1%81%D0%B0_%E2%80%94_%D0%9C%D0%B0%D1%80%D0%BA%D0%BE%D0%B2%D0%B0), в которой сказано, что если выполнены несколько условий, одним из которых является `линейность связи между зависимой и независимой переменной`, то оценка МНК - лучшая несмещённая оценка. В нашем случае связь, очевидно, нелинейная, а оценки МНК - не лучшие. А значит нам нужен иной метод - [Метод Максимального Правдоподобия](https://econisfun.netlify.app/2023/06/27/%D0%BB%D0%B5%D0%BA%D1%86%D0%B8%D1%8F-4/).
 
 Для оценки таких моделей у нас есть более удачная функция, чем обыкновенная прямая. Эта функция - сигмоид.
 
@@ -177,23 +181,23 @@ stargazer(mod_ols, mod_ml, type = 'html', header = F) # сравним моде�
 <tr><td style="text-align:left"></td><td colspan="2">diabetes</td></tr>
 <tr><td style="text-align:left"></td><td><em>OLS</em></td><td><em>logistic</em></td></tr>
 <tr><td style="text-align:left"></td><td>(1)</td><td>(2)</td></tr>
-<tr><td colspan="3" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">glucose</td><td>0.004<sup>***</sup></td><td>0.081<sup>***</sup></td></tr>
+<tr><td colspan="3" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">glucose</td><td>0.004<sup>***</sup></td><td>0.088<sup>***</sup></td></tr>
 <tr><td style="text-align:left"></td><td>(0.0001)</td><td>(0.007)</td></tr>
 <tr><td style="text-align:left"></td><td></td><td></td></tr>
-<tr><td style="text-align:left">Constant</td><td>-0.312<sup>***</sup></td><td>-11.495<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(0.008)</td><td>(0.700)</td></tr>
+<tr><td style="text-align:left">Constant</td><td>-0.316<sup>***</sup></td><td>-12.194<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.008)</td><td>(0.779)</td></tr>
 <tr><td style="text-align:left"></td><td></td><td></td></tr>
-<tr><td colspan="3" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">Observations</td><td>3,129</td><td>3,129</td></tr>
-<tr><td style="text-align:left">R<sup>2</sup></td><td>0.371</td><td></td></tr>
-<tr><td style="text-align:left">Adjusted R<sup>2</sup></td><td>0.371</td><td></td></tr>
-<tr><td style="text-align:left">Log Likelihood</td><td></td><td>-193.250</td></tr>
-<tr><td style="text-align:left">Akaike Inf. Crit.</td><td></td><td>390.500</td></tr>
-<tr><td style="text-align:left">Residual Std. Error</td><td>0.131 (df = 3127)</td><td></td></tr>
-<tr><td style="text-align:left">F Statistic</td><td>1,844.903<sup>***</sup> (df = 1; 3127)</td><td></td></tr>
+<tr><td colspan="3" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">Observations</td><td>3,114</td><td>3,114</td></tr>
+<tr><td style="text-align:left">R<sup>2</sup></td><td>0.375</td><td></td></tr>
+<tr><td style="text-align:left">Adjusted R<sup>2</sup></td><td>0.375</td><td></td></tr>
+<tr><td style="text-align:left">Log Likelihood</td><td></td><td>-174.808</td></tr>
+<tr><td style="text-align:left">Akaike Inf. Crit.</td><td></td><td>353.616</td></tr>
+<tr><td style="text-align:left">Residual Std. Error</td><td>0.127 (df = 3112)</td><td></td></tr>
+<tr><td style="text-align:left">F Statistic</td><td>1,869.001<sup>***</sup> (df = 1; 3112)</td><td></td></tr>
 <tr><td colspan="3" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left"><em>Note:</em></td><td colspan="2" style="text-align:right"><sup>*</sup>p<0.1; <sup>**</sup>p<0.05; <sup>***</sup>p<0.01</td></tr>
 </table>
 
-Прогнозы:
+## Ставим диагнозы при помощи модели
 
 
 ```r
@@ -222,18 +226,18 @@ result %>%
 
 ```
 ## # A tibble: 10 × 5
-##    gl_test dia_test pred_ols pred_ml pred_ml_01
-##      <dbl>    <dbl>    <dbl>   <dbl>      <dbl>
-##  1      80        0   0.0199 0.00676          0
-##  2      65        0  -0.0423 0.00201          0
-##  3     127        1   0.215  0.237            0
-##  4      63        0  -0.0506 0.00170          0
-##  5      61        0  -0.0589 0.00145          0
-##  6      81        0   0.0241 0.00733          0
-##  7      93        0   0.0739 0.0192           0
-##  8      78        0   0.0116 0.00575          0
-##  9      64        0  -0.0465 0.00185          0
-## 10      85        0   0.0407 0.0101           0
+##    gl_test dia_test pred_ols   pred_ml pred_ml_01
+##      <dbl>    <dbl>    <dbl>     <dbl>      <dbl>
+##  1      67        0 -0.0357   0.00178           0
+##  2      60        0 -0.0650   0.000965          0
+##  3      NA        0 NA       NA                NA
+##  4      95        0  0.0814   0.0203            0
+##  5      76        0  0.00190  0.00390           0
+##  6      80        0  0.0186   0.00553           0
+##  7      54        0 -0.0901   0.000571          0
+##  8      47        0 -0.119    0.000309          0
+##  9      70        0 -0.0232   0.00231           0
+## 10      NA        0 NA       NA                NA
 ```
 
 В отличие от оценок, сделанных при помощи МНК, оценки ММП смещённые. Это значит, что средняя ошибка в модели не равна 0.
@@ -244,7 +248,7 @@ residuals(mod_ols) %>% mean() # Ошибки в модели МНК.
 ```
 
 ```
-## [1] -5.322319e-18
+## [1] 9.633536e-18
 ```
 
 ```r
@@ -252,7 +256,7 @@ residuals(mod_ml) %>% mean() # Ошибки в модели ММП.
 ```
 
 ```
-## [1] -0.09257632
+## [1] -0.08643711
 ```
 
 Для большей наглядности, нарисуем распределение ошибок в моделях:
@@ -267,10 +271,6 @@ tibble(id = 1:length(residuals(mod_ols)),
   geom_density(alpha = 0.5) +
   theme_minimal()+
   xlim(-1, 0.5)
-```
-
-```
-## Warning: Removed 120 rows containing non-finite values (`stat_density()`).
 ```
 
 <img src="/post/Lecture-4/Lec_4.1_files/figure-html/unnamed-chunk-13-1.png" width="672" />
@@ -289,27 +289,27 @@ stargazer(mod_ml, mod_ml_1, type = 'html', header = F)
 <tr><td></td><td colspan="2" style="border-bottom: 1px solid black"></td></tr>
 <tr><td style="text-align:left"></td><td colspan="2">diabetes</td></tr>
 <tr><td style="text-align:left"></td><td>(1)</td><td>(2)</td></tr>
-<tr><td colspan="3" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">glucose</td><td>0.081<sup>***</sup></td><td>0.078<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(0.007)</td><td>(0.007)</td></tr>
+<tr><td colspan="3" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">glucose</td><td>0.088<sup>***</sup></td><td>0.086<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.007)</td><td>(0.008)</td></tr>
 <tr><td style="text-align:left"></td><td></td><td></td></tr>
-<tr><td style="text-align:left">age</td><td></td><td>0.058<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td></td><td>(0.020)</td></tr>
+<tr><td style="text-align:left">age</td><td></td><td>0.055<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td></td><td>(0.021)</td></tr>
 <tr><td style="text-align:left"></td><td></td><td></td></tr>
-<tr><td style="text-align:left">education</td><td></td><td>-0.154</td></tr>
-<tr><td style="text-align:left"></td><td></td><td>(0.168)</td></tr>
+<tr><td style="text-align:left">education</td><td></td><td>-0.048</td></tr>
+<tr><td style="text-align:left"></td><td></td><td>(0.166)</td></tr>
 <tr><td style="text-align:left"></td><td></td><td></td></tr>
-<tr><td style="text-align:left">cigsPerDay</td><td></td><td>-0.003</td></tr>
-<tr><td style="text-align:left"></td><td></td><td>(0.015)</td></tr>
+<tr><td style="text-align:left">cigsPerDay</td><td></td><td>-0.024</td></tr>
+<tr><td style="text-align:left"></td><td></td><td>(0.018)</td></tr>
 <tr><td style="text-align:left"></td><td></td><td></td></tr>
-<tr><td style="text-align:left">totChol</td><td></td><td>0.002</td></tr>
+<tr><td style="text-align:left">totChol</td><td></td><td>0.003</td></tr>
 <tr><td style="text-align:left"></td><td></td><td>(0.003)</td></tr>
 <tr><td style="text-align:left"></td><td></td><td></td></tr>
-<tr><td style="text-align:left">Constant</td><td>-11.495<sup>***</sup></td><td>-14.457<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(0.700)</td><td>(1.496)</td></tr>
+<tr><td style="text-align:left">Constant</td><td>-12.194<sup>***</sup></td><td>-15.369<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.779)</td><td>(1.583)</td></tr>
 <tr><td style="text-align:left"></td><td></td><td></td></tr>
-<tr><td colspan="3" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">Observations</td><td>3,129</td><td>3,023</td></tr>
-<tr><td style="text-align:left">Log Likelihood</td><td>-193.250</td><td>-180.529</td></tr>
-<tr><td style="text-align:left">Akaike Inf. Crit.</td><td>390.500</td><td>373.057</td></tr>
+<tr><td colspan="3" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">Observations</td><td>3,114</td><td>3,012</td></tr>
+<tr><td style="text-align:left">Log Likelihood</td><td>-174.808</td><td>-165.490</td></tr>
+<tr><td style="text-align:left">Akaike Inf. Crit.</td><td>353.616</td><td>342.981</td></tr>
 <tr><td colspan="3" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left"><em>Note:</em></td><td colspan="2" style="text-align:right"><sup>*</sup>p<0.1; <sup>**</sup>p<0.05; <sup>***</sup>p<0.01</td></tr>
 </table>
 
@@ -344,16 +344,16 @@ predictions %>%
 ## # A tibble: 10 × 7
 ##    true_diagnoses  prob_ml prob_ml_1 dia_ml dia_ml_1 error_ml error_ml_1
 ##             <dbl>    <dbl>     <dbl>  <dbl>    <dbl>    <dbl>      <dbl>
-##  1              0 NA        NA           NA       NA       NA         NA
-##  2              0  0.00575   0.00188      0        0        0          0
-##  3              0  0.0286    0.0313       0        0        0          0
-##  4              0  0.00236   0.00261      0        0        0          0
-##  5              0  0.00623   0.0145       0        0        0          0
-##  6              0  0.00384   0.00328      0        0        0          0
-##  7              0 NA        NA           NA       NA       NA         NA
-##  8              0  0.00794   0.00346      0        0        0          0
-##  9              0 NA        NA           NA       NA       NA         NA
-## 10              0  0.00530   0.00315      0        0        0          0
+##  1              0  0.00163   0.00129      0        0        0          0
+##  2              0  0.00149  NA            0       NA        0          0
+##  3              0 NA        NA           NA       NA       NA         NA
+##  4              0  0.00553   0.00477      0        0        0          0
+##  5              0  0.00149   0.00214      0        0        0          0
+##  6              0 NA        NA           NA       NA       NA         NA
+##  7              0  0.0186    0.0107       0        0        0          0
+##  8              0  0.00137   0.00143      0        0        0          0
+##  9              0  0.00231   0.00328      0        0        0          0
+## 10              0  0.0285    0.0142       0        0        0          0
 ```
 
 
@@ -362,7 +362,7 @@ predictions$error_ml %>% na.omit() %>% sum
 ```
 
 ```
-## [1] 8
+## [1] 13
 ```
 
 ```r
@@ -370,7 +370,7 @@ predictions$error_ml_1 %>% na.omit() %>% sum
 ```
 
 ```
-## [1] 8
+## [1] 13
 ```
 
 Удивительно, но обе модели ошиблись в диагнозах `менее 20 раз из 800` - менее 5%! Модель с одной объясняющей переменной показала отличную способность прогнозировать диагнозы, потому что мы выбрали наиболее значимую объясняющую переменную - уровень инсулина.
