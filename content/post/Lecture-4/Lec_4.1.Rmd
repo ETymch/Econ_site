@@ -1,0 +1,226 @@
+---
+title: "Лекция 4 - практическая часть"
+author: "Е. Тымченко"
+date: 2023-07-02
+categories: ["R"]
+tags: ["Econ"]
+---
+
+# Библиотеки
+
+```{r, warning=FALSE, message=FALSE, error=FALSE}
+library(tidyverse)
+library(hrbrthemes)
+library(stargazer)
+library(reshape2)
+```
+
+# Данные
+
+```{r, warning=FALSE, error=FALSE, message=FALSE}
+dta <- read_csv('https://raw.githubusercontent.com/ETymch/Econometrics_2023/main/Datasets/framingham.csv')
+
+test <- sample_n(dta, 800) # тестовая выборка. На ней мы будем проверять модели.
+train <- setdiff(dta, test) # на этой выборке мы будем оценивать модели
+```
+
+Первый график:
+
+```{r, warning=FALSE, message=FALSE}
+dta %>%
+  ggplot(aes(x = glucose, y = diabetes)) +
+  geom_point() +
+  geom_smooth(method = 'lm') +
+  geom_vline(xintercept = 99, color = 'red') + # Верхняя граница нормы
+  theme_ipsum() +
+  labs(x = 'Уровень глюкозы в крови, мг./Дл.',
+       y = 'Сахарный диабет')
+```
+
+Линия плохо описывает взаимосвязь. Возможно, такая форма лучше описывает зависимость?
+
+```{r, warning=FALSE, message=FALSE}
+dta %>%
+  ggplot(aes(x = glucose, y = diabetes)) +
+  geom_point() +
+  geom_smooth(method = "glm", 
+              method.args = list(family = "binomial"), 
+              se = FALSE) +
+  geom_vline(xintercept = 99, color = 'red') +
+  theme_ipsum() +
+  labs(x = 'Уровень глюкозы в крови, мг./Дл.',
+       y = 'Сахарный диабет')
+```
+
+Оценим модель с помощью МНК.
+
+```{r, results='asis'}
+mod_ols <- lm(diabetes ~ glucose, train)
+stargazer(mod_ols, type = 'html', header = F)
+```
+
+Но как её интерпретировать? Что значит отрицательный `intercept`. Если человек не сдавал анализ на глюкозу, его заболеваемость отрицательная?
+
+Для оценки таких моделей у нас есть более удачная функция, чем обыкновенная прямая. Эта функция - сигмоид.
+
+## Логистическая функция
+
+Напишем уравнение для линии.
+
+```{r}
+y <- function(x){
+  intercept + b*x
+}
+```
+
+Уравнение логистической функции.
+
+```{r}
+S <- function(x){
+  1 / ( 1 + exp(-y(x)))
+}
+```
+
+Параметры и интервал
+
+```{r}
+intercept = 1
+b = 1
+x <- seq(-5, 5, by = 0.1)
+
+```
+
+Теперь нарисуем их:
+
+```{r, warning=FALSE, error=FALSE}
+tibble(x,
+       line = y(x),
+       sigmoid = S(x)) %>%
+  melt(id = 'x') %>%
+  ggplot(aes(x = x, y = value, color = variable)) +
+  geom_line(lwd = 1, alpha = 0.6) +
+  ylim(0, 1) +
+  theme_ipsum() +
+  labs(title = 'Сигмоид и линия', x = 'X', y = 'Диабет - 1, Здоров - 0')
+```
+
+Чтобы получить больше интеиции о том, как устроена логистическая функция, Сравним две модели:
+
+* МНК: $y_i = intercept + \beta_1 x_i + \epsilon_i$ 
+* Логистическая регрессия: $y_i = \frac{1}{1 + e^{-(ntercept + \beta_1 x_i)}} + \epsilon_i$
+
+Зафиксируем $\beta_1$ и посмотрим, что произойдёт при изменении `intercept`. 
+
+<center>
+
+<video width="800" height="600" controls>
+<source src="https://github.com/ETymch/Econometrics_2023/raw/main/Pics/anim_sigmoid_int.mp4" type="video/mp4">
+</video>
+
+</center>
+
+Теперь зафиксируем `intercept` и посмотрим, что будет при изменении $\beta_1$:
+
+<center>
+
+<video width="800" height="600" controls>
+<source src="https://github.com/ETymch/Econometrics_2023/raw/main/Pics/anim_sigmoid_b.mp4" type="video/mp4">
+</video>
+
+</center>
+
+Оценим две модели:
+
+```{r, results='asis'}
+mod_ml <- glm(diabetes ~ glucose, family = 'binomial', train) # МНК
+mod_ols <- lm(diabetes ~ glucose, train) # ММП
+
+stargazer(mod_ols, mod_ml, type = 'html', header = F) # сравним модели
+```
+
+Прогнозы:
+
+```{r}
+S <- function(x){
+  1 / (1 + exp(- (coefficients(mod_ml)[1] + coefficients(mod_ml)[2] * x)))
+}
+
+y <- function(x){
+  coefficients(mod_ols)[1] + coefficients(mod_ols)[2]*x
+}
+
+gl_test <- test$glucose # Столбец с значением анализа для тестовой выборки.
+dia_test <- test$diabetes # Столбец с истинным значением диагноза.
+
+# Создаём табличку
+
+result <- tibble(gl_test, 
+       dia_test,
+       pred_ols = y(gl_test),
+       pred_ml = S(gl_test)) %>%
+  mutate(pred_ml_01 = ifelse(pred_ml < 0.5, 0, 1)) # создайм ещё одну переменную со значением прогноза на основе предсказанной вероятности.
+
+result %>%
+  head(10) # посмотрим на вервые 10 строк в таблице.
+```
+
+В отличие от оценок, сделанных при помощи МНК, оценки ММП смещённые. Это значит, что средняя ошибка в модели не равна 0.
+
+```{r}
+residuals(mod_ols) %>% mean() # Ошибки в модели МНК.
+residuals(mod_ml) %>% mean() # Ошибки в модели ММП.
+```
+
+Для большей наглядности, нарисуем распределение ошибок в моделях:
+
+```{r, message=FALSE, error=FALSE}
+tibble(id = 1:length(residuals(mod_ols)),
+                redid_ols = residuals(mod_ols),
+                resid_ml = residuals(mod_ml)) %>%
+  melt(id = 'id') %>%
+  ggplot(aes(x = value, color = variable, fill = variable)) +
+  geom_density(alpha = 0.5) +
+  theme_minimal()+
+  xlim(-1, 0.5)
+```
+
+Добавим в модель больше параметров и сравним с первой:
+
+```{r, results='asis'}
+mod_ml_1 <- glm(diabetes ~ glucose + age + education + cigsPerDay + totChol, family = 'binomial', train) # Диагноз теперь зависит от уровня глюкозы, возраста, уровня образования, интенсивности курения и уровня холестерина.
+
+stargazer(mod_ml, mod_ml_1, type = 'html', header = F)
+```
+
+Сравним, какая модель стваит диагнозы: с однйо объясняющей переменной или с несколькими:
+
+```{r}
+S <- function(x){
+  1 / (1 + exp(-x))
+}
+
+predict_ml <- predict(mod_ml, test %>% select(-diabetes)) %>%
+  S()
+predict_ml_1 <- predict(mod_ml_1, test %>% select(-diabetes)) %>%
+  S()
+
+predictions <- tibble(true_diagnoses = test$diabetes,
+       prob_ml = predict_ml,
+       prob_ml_1 = predict_ml_1) %>%
+  mutate(dia_ml = ifelse(prob_ml < 0.5, 0, 1),
+         dia_ml_1 = ifelse(prob_ml_1 < 0.5, 0, 1)
+         ) %>%
+  mutate(error_ml = ifelse(dia_ml == true_diagnoses, 0, 1),
+         error_ml_1 = ifelse(dia_ml == true_diagnoses, 0, 1)
+         )
+
+predictions %>%
+  tail(10) # последние 10 наблюдений в табличке
+```
+
+```{r}
+predictions$error_ml %>% na.omit() %>% sum
+predictions$error_ml_1 %>% na.omit() %>% sum
+```
+
+Удивительно, но обе модели ошиблись в диагнозах `менее 20 раз из 800` - менее 5%! Модель с одной объясняющей переменной показала отличную способность прогнозировать диагнозы, потому что мы выбрали наиболее значимую объясняющую переменную - уровень инсулина.
