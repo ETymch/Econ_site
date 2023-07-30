@@ -229,24 +229,12 @@ stargazer(ols, FE, type = 'html', header = FALSE) # Сравнение моде�
 
 ```r
 gm <- read.csv('https://raw.githubusercontent.com/ETymch/Econometrics_2023/main/Datasets/gapminder.csv') %>%
-  as.tibble() %>%
+  as_tibble() %>%
   mutate(log_GDPperCap = log(gdpPercap)) %>%
   group_by(country) %>%
   mutate(lifeExp_within = lifeExp - mean(lifeExp),
          log_GDPperCap_within = log_GDPperCap - mean(log_GDPperCap)) %>%
   ungroup()
-```
-
-```
-## Warning: `as.tibble()` was deprecated in tibble 2.0.0.
-## ℹ Please use `as_tibble()` instead.
-## ℹ The signature and semantics have changed, see `?as_tibble`.
-## This warning is displayed once every 8 hours.
-## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
-## generated.
-```
-
-```r
 gm %>% head()
 ```
 
@@ -378,166 +366,6 @@ $$
 
 ```r
 data <- rio::import('https://github.com/ETymch/Econometrics_2023/raw/main/Datasets/BVX_annual_regdata.dta')
-
-data %>%
-  head()
-```
-
-```
-##     country ccode ISO3 year decade postwar rgdp_gr credit_to_gdp   Rtot_real
-## 1 Argentina    32  ARG 1870   1870       0      NA            NA  0.06641372
-## 2 Argentina    32  ARG 1871   1870       0      NA            NA  0.11768574
-## 3 Argentina    32  ARG 1872   1870       0      NA            NA  0.20709625
-## 4 Argentina    32  ARG 1873   1870       0      NA            NA  0.03341857
-## 5 Argentina    32  ARG 1874   1870       0      NA            NA  0.09157762
-## 6 Argentina    32  ARG 1875   1870       0      NA            NA -0.07226025
-##   Rtot_real_w Rtot_nonfin_real Rtot_nonfin_real_w C_B30 C_N30 jointcrisis JC
-## 1  0.06641372               NA                 NA     0    NA          NA  0
-## 2  0.11768574               NA                 NA     0    NA          NA  0
-## 3  0.20709625               NA                 NA     0    NA          NA  0
-## 4  0.03341857               NA                 NA     0    NA          NA  0
-## 5  0.09157762               NA                 NA     0    NA          NA  0
-## 6 -0.07226025               NA                 NA     0    NA          NA  0
-##   revisedcrisis RC PANIC PANIC_ind PANIC_year PANIC_finer PANIC_f PANIC_finer_f
-## 1            NA  0     0         0          0           0       0             0
-## 2            NA  0     0         0          0           0       0             0
-## 3            NA  0     0         0          0           0       0             0
-## 4            NA  0     0         0          0           0       0             0
-## 5            NA  0     0         0          0           0       0             0
-## 6            NA  0     0         0          0           0       0             0
-##   bankeqdecline bankfailure_narrative bankfailure_narrative_f
-## 1            NA                     0                       0
-## 2            NA                     0                       0
-## 3            NA                     0                       0
-## 4            NA                     0                       0
-## 5            NA                     0                       0
-## 6            NA                     0                       0
-##   ReinhartRogoffCrisis LaevenValenciaCrisis  P P2  T     inf_cpi g0y g1y g2y
-## 1                   NA                   NA NA NA NA  0.04693500  NA  NA  NA
-## 2                   NA                   NA NA NA NA  0.07198795  NA  NA  NA
-## 3                   NA                   NA NA NA NA  0.17589210  NA  NA  NA
-## 4                   NA                   NA NA NA NA  0.00000000  NA  NA  NA
-## 5                   NA                   NA NA NA NA -0.02293907  NA  NA  NA
-## 6                   NA                   NA NA NA NA -0.03497187  NA  NA  NA
-##   g3y g4y g5y g6y g7y g8y g9y g10y g11y g12y g13y g14y g15y g0Rtot_real_w
-## 1  NA  NA  NA  NA  NA  NA  NA   NA   NA   NA   NA   NA   NA    0.06641372
-## 2  NA  NA  NA  NA  NA  NA  NA   NA   NA   NA   NA   NA   NA    0.11768574
-## 3  NA  NA  NA  NA  NA  NA  NA   NA   NA   NA   NA   NA   NA    0.20709625
-## 4  NA  NA  NA  NA  NA  NA  NA   NA   NA   NA   NA   NA   NA    0.03341857
-## 5  NA  NA  NA  NA  NA  NA  NA   NA   NA   NA   NA   NA   NA    0.09157762
-## 6  NA  NA  NA  NA  NA  NA  NA   NA   NA   NA   NA   NA   NA   -0.07226025
-##   g1Rtot_real_w g2Rtot_real_w g3Rtot_real_w g4Rtot_real_w g5Rtot_real_w
-## 1    0.19191541    0.43875661   0.486837804    0.62299889     0.5057206
-## 2    0.34915426    0.39424106   0.521922350    0.41194785     0.2293077
-## 3    0.24743567    0.36167285   0.263278037    0.09986882     0.2441169
-## 4    0.12805657    0.04654292  -0.088830896    0.03066917     0.1851690
-## 5    0.01269994   -0.11829617  -0.002660481    0.14684315     0.5098159
-## 6   -0.19226648   -0.08633202   0.050629053    0.38315034     0.5823517
-##   g6Rtot_real_w g7Rtot_real_w g8Rtot_real_w g9Rtot_real_w g10Rtot_real_w
-## 1     0.3109506     0.4828821     0.7051697      1.244851       1.568155
-## 2     0.3905317     0.5989758     1.1050475      1.408217       1.738262
-## 3     0.4306131     0.8833983     1.1546454      1.449939       1.887932
-## 4     0.5602718     0.7849823     1.0296135      1.392462       1.882212
-## 5     0.7272598     0.9639801     1.3150951      1.789008       1.939934
-## 6     0.7992125     1.1208707     1.5550245      1.693289       2.491918
-##   g11Rtot_real_w g12Rtot_real_w g13Rtot_real_w g14Rtot_real_w g15Rtot_real_w
-## 1       1.920120       2.442171       3.146802       3.371205       4.667379
-## 2       2.227801       2.888549       3.098977       4.314428       6.111607
-## 3       2.479107       2.667378       3.754849       5.362795       6.569223
-## 4       2.038182       2.939081       4.271159       5.270605       7.521569
-## 5       2.811700       4.100701       5.067827       7.246000       8.555224
-## 6       3.672779       4.558768       6.554203       7.753590       6.994351
-##   g0credit_to_gdp g1credit_to_gdp g2credit_to_gdp g3credit_to_gdp
-## 1              NA              NA              NA              NA
-## 2              NA              NA              NA              NA
-## 3              NA              NA              NA              NA
-## 4              NA              NA              NA              NA
-## 5              NA              NA              NA              NA
-## 6              NA              NA              NA              NA
-##   g4credit_to_gdp g5credit_to_gdp g6credit_to_gdp g7credit_to_gdp
-## 1              NA              NA              NA              NA
-## 2              NA              NA              NA              NA
-## 3              NA              NA              NA              NA
-## 4              NA              NA              NA              NA
-## 5              NA              NA              NA              NA
-## 6              NA              NA              NA              NA
-##   g8credit_to_gdp g9credit_to_gdp g10credit_to_gdp g11credit_to_gdp
-## 1              NA              NA               NA               NA
-## 2              NA              NA               NA               NA
-## 3              NA              NA               NA               NA
-## 4              NA              NA               NA               NA
-## 5              NA              NA               NA               NA
-## 6              NA              NA               NA               NA
-##   g12credit_to_gdp g13credit_to_gdp g14credit_to_gdp g15credit_to_gdp
-## 1               NA               NA               NA               NA
-## 2               NA               NA               NA               NA
-## 3               NA               NA               NA               NA
-## 4               NA               NA               NA               NA
-## 5               NA               NA               NA               NA
-## 6               NA               NA               NA               NA
-##          Fd1y Fd1credit_to_gdp Fd1Rtot_real_w       Fd2y Fd2credit_to_gdp
-## 1          NA               NA     0.11768574         NA               NA
-## 2          NA               NA     0.20709625         NA               NA
-## 3          NA               NA     0.03341857         NA               NA
-## 4          NA               NA     0.09157762         NA               NA
-## 5          NA               NA    -0.07226025         NA               NA
-## 6 0.001833181               NA    -0.12935333 0.07877161               NA
-##   Fd2Rtot_real_w        Fd3y Fd3credit_to_gdp Fd3Rtot_real_w       Fd4y
-## 1     0.34915426          NA               NA     0.39424106         NA
-## 2     0.24743567          NA               NA     0.36167285         NA
-## 3     0.12805657          NA               NA     0.04654292         NA
-## 4     0.01269994          NA               NA    -0.11829617         NA
-## 5    -0.19226648          NA               NA    -0.08633202         NA
-## 6    -0.01516779 0.004881032               NA     0.13246097 0.02177944
-##   Fd4credit_to_gdp Fd4Rtot_real_w       Fd5y Fd5credit_to_gdp Fd5Rtot_real_w
-## 1               NA    0.521922350         NA               NA     0.41194785
-## 2               NA    0.263278037         NA               NA     0.09986882
-## 3               NA   -0.088830896         NA               NA     0.03066917
-## 4               NA   -0.002660481         NA               NA     0.14684315
-## 5               NA    0.050629053         NA               NA     0.38315034
-## 6               NA    0.490881830 -0.0191423               NA     0.70559877
-##          Fd6y Fd6credit_to_gdp Fd6Rtot_real_w      Fd7y Fd7credit_to_gdp
-## 1          NA               NA      0.2293077        NA               NA
-## 2          NA               NA      0.2441169        NA               NA
-## 3          NA               NA      0.1851690        NA               NA
-## 4          NA               NA      0.5098159        NA               NA
-## 5          NA               NA      0.5823517        NA               NA
-## 6 -0.02539623               NA      0.9393505 0.1761866               NA
-##   Fd7Rtot_real_w      Fd8y Fd8credit_to_gdp Fd8Rtot_real_w     Fd9y
-## 1      0.3905317        NA               NA      0.5989758       NA
-## 2      0.4306131        NA               NA      0.8833983       NA
-## 3      0.5602718        NA               NA      0.7849823       NA
-## 4      0.7272598        NA               NA      0.9639801       NA
-## 5      0.7992125        NA               NA      1.1208707       NA
-## 6      1.2860622 0.2578847               NA      1.7540317 0.290888
-##   Fd9credit_to_gdp Fd9Rtot_real_w    Fd10y Fd10credit_to_gdp Fd10Rtot_real_w
-## 1               NA       1.105047       NA                NA        1.408217
-## 2               NA       1.154645       NA                NA        1.449939
-## 3               NA       1.029613       NA                NA        1.392462
-## 4               NA       1.315095       NA                NA        1.789008
-## 5               NA       1.555025       NA                NA        1.693289
-## 6               NA       1.903065 0.404037                NA        2.763898
-##      Fd11y Fd11credit_to_gdp Fd11Rtot_real_w     Fd12y Fd12credit_to_gdp
-## 1       NA                NA        1.738262        NA                NA
-## 2       NA                NA        1.887932        NA                NA
-## 3       NA                NA        1.882212        NA                NA
-## 4       NA                NA        1.939934        NA                NA
-## 5       NA                NA        2.491918        NA                NA
-## 6 0.369558                NA        4.036735 0.3879839                NA
-##   Fd12Rtot_real_w     Fd13y Fd13credit_to_gdp Fd13Rtot_real_w     Fd14y
-## 1        2.227801        NA                NA        2.888549        NA
-## 2        2.479107        NA                NA        2.667378        NA
-## 3        2.038182        NA                NA        2.939081        NA
-## 4        2.811700        NA                NA        4.100701        NA
-## 5        3.672779        NA                NA        4.558768        NA
-## 6        4.991733 0.4817841                NA        7.142589 0.4978984
-##   Fd14credit_to_gdp Fd14Rtot_real_w     Fd15y Fd15credit_to_gdp Fd15Rtot_real_w
-## 1                NA        3.098977        NA                NA        4.314428
-## 2                NA        3.754849        NA                NA        5.362795
-## 3                NA        4.271159        NA                NA        5.270605
-## 4                NA        5.067827        NA                NA        7.246000
-## 5                NA        6.554203        NA                NA        7.753590
-## 6                NA        8.435394 0.3904704                NA        7.617020
 ```
 
 Давайте посмотрим, существует ли какая-либо зависимость между паникой на банковском рынке и сокращением банковских активов. Выберем 4 случайных страны:
@@ -549,13 +377,9 @@ data %>%
   ggplot(aes(x = Rtot_real_w, y = PANIC_ind)) +
   geom_point(color = '#ad466c', size = 2, alpha = 0.6) +
   facet_wrap(~country) +
-  theme_bw(base_family = 'Lobster') +
+  theme_bw(base_family = 'Lobster', base_size = 10) +
   labs(x = 'Индекс реальной доходности собственного капитала банка',
        y = 'Паника')
-```
-
-```
-## Warning: Removed 87 rows containing missing values (`geom_point()`).
 ```
 
 <img src="/post/Lecture-6/Lec_6_files/figure-html/unnamed-chunk-11-1.png" width="672" />

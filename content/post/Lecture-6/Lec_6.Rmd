@@ -29,7 +29,7 @@ font_add_google('Merriweather')
 font_add_google('Lobster')
 ```
 
-```{r, }
+```{r, warning=FALSE, error=FALSE}
 data_housing <- read.csv('https://raw.githubusercontent.com/ETymch/Econometrics_2023/main/Datasets/data.housing.csv') %>%
   tibble()
 
@@ -167,9 +167,9 @@ stargazer(ols, FE, type = 'html', header = FALSE) # Сравнение моде�
 
 Данные:
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 gm <- read.csv('https://raw.githubusercontent.com/ETymch/Econometrics_2023/main/Datasets/gapminder.csv') %>%
-  as.tibble() %>%
+  as_tibble() %>%
   mutate(log_GDPperCap = log(gdpPercap)) %>%
   group_by(country) %>%
   mutate(lifeExp_within = lifeExp - mean(lifeExp),
@@ -186,7 +186,7 @@ gm %>% head()
 
 Давайте изобразим данные! Изобразить на одном графике данные по всем странам - сложно. На лекции мы проголосовали за 4 страны:
 
-```{r}
+```{r, warning = FALSE}
 gm %>%
   filter(country %in% c('France', 'Korea, Dem. Rep.', 'Korea, Rep.', 'Albania')) %>%
   ggplot(aes(x = lifeExp_within, y = log_GDPperCap_within, color = country)) +
@@ -245,20 +245,17 @@ $$
 
 ```{r}
 data <- rio::import('https://github.com/ETymch/Econometrics_2023/raw/main/Datasets/BVX_annual_regdata.dta')
-
-data %>%
-  head()
 ```
 
 Давайте посмотрим, существует ли какая-либо зависимость между паникой на банковском рынке и сокращением банковских активов. Выберем 4 случайных страны:
 
-```{r}
+```{r, warning=FALSE}
 data %>%
   filter(country %in% c('Italy', 'Spain', 'Austria', 'Argentina')) %>%
   ggplot(aes(x = Rtot_real_w, y = PANIC_ind)) +
   geom_point(color = '#ad466c', size = 2, alpha = 0.6) +
   facet_wrap(~country) +
-  theme_bw(base_family = 'Lobster') +
+  theme_bw(base_family = 'Lobster', base_size = 10) +
   labs(x = 'Индекс реальной доходности собственного капитала банка',
        y = 'Паника')
 ```
