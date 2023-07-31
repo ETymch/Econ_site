@@ -6,7 +6,7 @@ categories: ["R"]
 tags: ["Econ"]
 ---
 
-## Повторение: ММП
+## Повторение: Метод максимального правдоподобия
 
 Идея метода наименьших квадратов:
 
@@ -23,7 +23,124 @@ $$\max_\beta \mathbb{P}(данные \sim какое-то распределен
 * Мультиномимльная логистическая регрессия
 * Пуассоновская регрессия
 
-**Пример**
+### Пример: аренда велосипедов
+
+<center>
+
+![Rent](https://github.com/ETymch/Econometrics_2023/blob/main/Pics/bikes.gif?raw=true)
+
+</center>
+
+У нас есть данные об аренде ведосипедов в городе Вашингтон на протяжении нескольких лет. Мы хотим посстроить модель, способную прогнозировать аренду на основе данных о погоде.
+
+Нам потребуются библиотеки:
+
+```{r, warning=FALSE, message=FALSE, error=FALSE}
+library(tidyverse) # Работа с данными
+library(ggExtra) # Красивые типы  графиков
+library(showtext) # Рендер шрифтов в ggplot2
+library(sysfonts) # загрузка шрифтов в R
+library(stargazer) # Удобные таблицы статистики моделей.
+library(reshape2) # Для преобразования данных
+library(patchwork) # С помощью этой библиотеки мы модем делать различные выкладки графиков. Например, График_1 | График_2.
+showtext_auto()
+
+# Шрифты для графиков
+font_add_google('Lobster')
+font_add_google('Cormorant SC')
+
+# Любимый цвет для графиков
+col1 <- '#ad466c'
+```
+
+Загрузка данных:
+
+```{r, warning=FALSE, message=FALSE}
+bikes_train <- read.csv('https://github.com/ETymch/Econometrics_2023/raw/main/Datasets/bikes_train.csv')
+bikes_test <- read.csv('https://github.com/ETymch/Econometrics_2023/raw/main/Datasets/bikes_test.csv')
+```
+
+```{r, warning=FALSE, message=FALSE}
+b <- bikes_train %>%
+  ggplot(aes(x = atemp, y = count)) +
+  geom_jitter(color = col1, size = 3.0, alpha = 0.2) +
+  theme_minimal(base_family = 'Lobster', base_size = 16) +
+  labs(x = 'Температура, С', y = 'Число арендованных велосипедов')
+ggMarginal(b, type="density", size = 5, fill = col1, alpha = 0.6, color = NA)
+```
+
+Оценим 4 модели, 3 из которых - [пуассоновская регрессия](https://en.wikipedia.org/wiki/Poisson_regression) о одна - МНК.
+
+```{r, results='asis'}
+mod_0 <- glm(count ~ humidity + season, family = poisson, bikes_train)
+mod_1 <-glm(count ~ humidity + season + atemp + windspeed, family = poisson, bikes_train)
+mod_2 <-glm(count ~ humidity + season + atemp + windspeed + workingday, family = poisson, bikes_train)
+mod_ols <-glm(count ~ humidity + season + atemp + windspeed + workingday, family = gaussian, bikes_train)
+
+stargazer(mod_0, mod_1, mod_2, mod_ols, header = F, type = 'html')
+```
+Прогнозы для тестовой выборки:
+
+```{r, warning=FALSE, message=FALSE}
+
+pr_0 <- predict(mod_0, bikes_test %>% select(-count)) %>% exp()
+pr_1 <- predict(mod_1, bikes_test %>% select(-count)) %>% exp()
+pr_2 <- predict(mod_2, bikes_test %>% select(-count)) %>% exp()
+pr_ols <- predict(mod_ols, bikes_test %>% select(-count))
+
+# Сводная таблица со всеми данными
+
+result <- 
+  tibble(pr_0, # прогнозы моделей
+       pr_1,
+       pr_2,
+       pr_ols,
+       true_value = bikes_test$count, # истинные значения
+       id = seq(1, length(pr_0), by = 1)) %>% # номер наблюдения
+  mutate(error_0 = (pr_0 - true_value)^2, # квадраты ошибок
+         erroe_1 = (pr_1 - true_value)^2,
+         error_2 = (pr_2 - true_value)^2,
+         error_ols = (pr_ols - true_value)^2
+  )
+```
+
+Статистика ошибок в четырёх моделях.
+
+```{r}
+result %>%
+  select(error_0,
+         erroe_1,
+         error_2,
+         error_ols) %>%
+  sapply(mean) %>% # Применить функцию "среднее" к каждому столбцу
+  sapply(sqrt) # Применить функцию "Квадратный корень" к каждому столбцу
+```
+
+На основании данных о средних ошибках мы не понимаем, какая модель лучше описывает данные. Давайте посмотрим, насколько равномерно распределены ошибки в зависимости от истинных значений аренды велосипедов.
+
+```{r}
+p1 <- result %>%
+  select(error_2, true_value) %>%
+  filter(error_2 <= 100000) %>%
+  ggplot(aes(x = error_2, y = true_value)) +
+  geom_point(color = col1, alpha = 0.15, size = 2) +
+  theme_minimal(base_family = 'Cormorant SC', base_size = 16) +
+  labs(x = 'Ошибки в модели пуассоновской регрессии',
+       y = 'Истинное значение')
+
+p2 <- 
+  result %>%
+  select(error_ols, true_value) %>%
+  filter(error_ols <= 100000) %>%
+  ggplot(aes(x = error_ols, y = true_value)) +
+  geom_point(color = col1, alpha = 0.15, size = 2) +
+  theme_minimal(base_family = 'Cormorant SC', base_size = 16) +
+  labs(x = 'Ошибки в модели, оценённой МНК',
+       y = 'Истинное значение')
+
+p1 | p2
+```
+Мы видим, что в модели пуассоновской регрессии ошибки распределены более равномерно!
 
 # Инструментальные переменные
 

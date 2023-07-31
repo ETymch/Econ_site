@@ -6,7 +6,7 @@ categories: ["R"]
 tags: ["Econ"]
 ---
 
-## Повторение: ММП
+## Повторение: Метод максимального правдоподобия
 
 Идея метода наименьших квадратов:
 
@@ -23,7 +23,169 @@ $$
 * Мультиномимльная логистическая регрессия
 * Пуассоновская регрессия
 
-**Пример**
+### Пример: аренда велосипедов
+
+<center>
+
+![Rent](https://github.com/ETymch/Econometrics_2023/blob/main/Pics/bikes.gif?raw=true)
+
+</center>
+
+У нас есть данные об аренде ведосипедов в городе Вашингтон на протяжении нескольких лет. Мы хотим посстроить модель, способную прогнозировать аренду на основе данных о погоде.
+
+Нам потребуются библиотеки:
+
+
+```r
+library(tidyverse) # Работа с данными
+library(ggExtra) # Красивые типы  графиков
+library(showtext) # Рендер шрифтов в ggplot2
+library(sysfonts) # загрузка шрифтов в R
+library(stargazer) # Удобные таблицы статистики моделей.
+library(reshape2) # Для преобразования данных
+library(patchwork) # С помощью этой библиотеки мы модем делать различные выкладки графиков. Например, График_1 | График_2.
+showtext_auto()
+
+# Шрифты для графиков
+font_add_google('Lobster')
+font_add_google('Cormorant SC')
+
+# Любимый цвет для графиков
+col1 <- '#ad466c'
+```
+
+Загрузка данных:
+
+
+```r
+bikes_train <- read.csv('https://github.com/ETymch/Econometrics_2023/raw/main/Datasets/bikes_train.csv')
+bikes_test <- read.csv('https://github.com/ETymch/Econometrics_2023/raw/main/Datasets/bikes_test.csv')
+```
+
+
+```r
+b <- bikes_train %>%
+  ggplot(aes(x = atemp, y = count)) +
+  geom_jitter(color = col1, size = 3.0, alpha = 0.2) +
+  theme_minimal(base_family = 'Lobster', base_size = 16) +
+  labs(x = 'Температура, С', y = 'Число арендованных велосипедов')
+ggMarginal(b, type="density", size = 5, fill = col1, alpha = 0.6, color = NA)
+```
+
+<img src="/post/Lecture-5/Lecture_5_files/figure-html/unnamed-chunk-3-1.png" width="672" />
+
+Оценим 4 модели, 3 из которых - [пуассоновская регрессия](https://en.wikipedia.org/wiki/Poisson_regression) о одна - МНК.
+
+
+```r
+mod_0 <- glm(count ~ humidity + season, family = poisson, bikes_train)
+mod_1 <-glm(count ~ humidity + season + atemp + windspeed, family = poisson, bikes_train)
+mod_2 <-glm(count ~ humidity + season + atemp + windspeed + workingday, family = poisson, bikes_train)
+mod_ols <-glm(count ~ humidity + season + atemp + windspeed + workingday, family = gaussian, bikes_train)
+
+stargazer(mod_0, mod_1, mod_2, mod_ols, header = F, type = 'html')
+```
+
+
+<table style="text-align:center"><tr><td colspan="5" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left"></td><td colspan="4"><em>Dependent variable:</em></td></tr>
+<tr><td></td><td colspan="4" style="border-bottom: 1px solid black"></td></tr>
+<tr><td style="text-align:left"></td><td colspan="4">count</td></tr>
+<tr><td style="text-align:left"></td><td colspan="3"><em>Poisson</em></td><td><em>normal</em></td></tr>
+<tr><td style="text-align:left"></td><td>(1)</td><td>(2)</td><td>(3)</td><td>(4)</td></tr>
+<tr><td colspan="5" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">humidity</td><td>-0.018<sup>***</sup></td><td>-0.015<sup>***</sup></td><td>-0.015<sup>***</sup></td><td>-2.992<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.00004)</td><td>(0.00004)</td><td>(0.00004)</td><td>(0.092)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">season</td><td>0.203<sup>***</sup></td><td>0.150<sup>***</sup></td><td>0.150<sup>***</sup></td><td>22.292<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.001)</td><td>(0.001)</td><td>(0.001)</td><td>(1.573)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">atemp</td><td></td><td>0.037<sup>***</sup></td><td>0.037<sup>***</sup></td><td>7.308<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td></td><td>(0.0001)</td><td>(0.0001)</td><td>(0.203)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">windspeed</td><td></td><td>0.006<sup>***</sup></td><td>0.006<sup>***</sup></td><td>1.052<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td></td><td>(0.0001)</td><td>(0.0001)</td><td>(0.214)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">workingday</td><td></td><td></td><td>0.004<sup>**</sup></td><td>-0.166</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td>(0.002)</td><td>(3.547)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">Constant</td><td>5.817<sup>***</sup></td><td>4.760<sup>***</sup></td><td>4.757<sup>***</sup></td><td>135.229<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.003)</td><td>(0.004)</td><td>(0.005)</td><td>(9.284)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td></tr>
+<tr><td colspan="5" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">Observations</td><td>9,000</td><td>9,000</td><td>9,000</td><td>9,000</td></tr>
+<tr><td style="text-align:left">Log Likelihood</td><td>-655,441.500</td><td>-573,657.500</td><td>-573,654.200</td><td>-58,246.660</td></tr>
+<tr><td style="text-align:left">Akaike Inf. Crit.</td><td>1,310,889.000</td><td>1,147,325.000</td><td>1,147,320.000</td><td>116,505.300</td></tr>
+<tr><td colspan="5" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left"><em>Note:</em></td><td colspan="4" style="text-align:right"><sup>*</sup>p<0.1; <sup>**</sup>p<0.05; <sup>***</sup>p<0.01</td></tr>
+</table>
+Прогнозы для тестовой выборки:
+
+
+```r
+pr_0 <- predict(mod_0, bikes_test %>% select(-count)) %>% exp()
+pr_1 <- predict(mod_1, bikes_test %>% select(-count)) %>% exp()
+pr_2 <- predict(mod_2, bikes_test %>% select(-count)) %>% exp()
+pr_ols <- predict(mod_ols, bikes_test %>% select(-count))
+
+# Сводная таблица со всеми данными
+
+result <- 
+  tibble(pr_0, # прогнозы моделей
+       pr_1,
+       pr_2,
+       pr_ols,
+       true_value = bikes_test$count, # истинные значения
+       id = seq(1, length(pr_0), by = 1)) %>% # номер наблюдения
+  mutate(error_0 = (pr_0 - true_value)^2, # квадраты ошибок
+         erroe_1 = (pr_1 - true_value)^2,
+         error_2 = (pr_2 - true_value)^2,
+         error_ols = (pr_ols - true_value)^2
+  )
+```
+
+Статистика ошибок в четырёх моделях.
+
+
+```r
+result %>%
+  select(error_0,
+         erroe_1,
+         error_2,
+         error_ols) %>%
+  sapply(mean) %>% # Применить функцию "среднее" к каждому столбцу
+  sapply(sqrt) # Применить функцию "Квадратный корень" к каждому столбцу
+```
+
+```
+##   error_0   erroe_1   error_2 error_ols 
+##  163.2686  152.1845  152.1992  152.5746
+```
+
+На основании данных о средних ошибках мы не понимаем, какая модель лучше описывает данные. Давайте посмотрим, насколько равномерно распределены ошибки в зависимости от истинных значений аренды велосипедов.
+
+
+```r
+p1 <- result %>%
+  select(error_2, true_value) %>%
+  filter(error_2 <= 100000) %>%
+  ggplot(aes(x = error_2, y = true_value)) +
+  geom_point(color = col1, alpha = 0.15, size = 2) +
+  theme_minimal(base_family = 'Cormorant SC', base_size = 16) +
+  labs(x = 'Ошибки в модели пуассоновской регрессии',
+       y = 'Истинное значение')
+
+p2 <- 
+  result %>%
+  select(error_ols, true_value) %>%
+  filter(error_ols <= 100000) %>%
+  ggplot(aes(x = error_ols, y = true_value)) +
+  geom_point(color = col1, alpha = 0.15, size = 2) +
+  theme_minimal(base_family = 'Cormorant SC', base_size = 16) +
+  labs(x = 'Ошибки в модели, оценённой МНК',
+       y = 'Истинное значение')
+
+p1 | p2
+```
+
+<img src="/post/Lecture-5/Lecture_5_files/figure-html/unnamed-chunk-7-1.png" width="672" />
+Мы видим, что в модели пуассоновской регрессии ошибки распределены более равномерно!
 
 # Инструментальные переменные
 
