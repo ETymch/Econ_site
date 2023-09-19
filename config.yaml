@@ -20,9 +20,12 @@ menu:
     - name: Эконометрика в R
       url: /post/
       weight: 2
+    - name: ggplot2
+      url: /gg/
+      weight: 3
     - name: О сайте
       url: /about/
-      weight: 3
+      weight: 4
   footer:
     - name: Categories
       url: "/categories/"
