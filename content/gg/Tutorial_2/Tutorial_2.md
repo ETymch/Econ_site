@@ -79,7 +79,7 @@ GET('https://github.com/ETymch/Econometrics_2023/raw/main/Datasets/difference.xl
 
 ```
 ## Response [https://raw.githubusercontent.com/ETymch/Econometrics_2023/main/Datasets/difference.xls]
-##   Date: 2023-09-21 13:02
+##   Date: 2023-09-21 13:06
 ##   Status: 200
 ##   Content-Type: application/octet-stream
 ##   Size: 58.9 kB
@@ -115,7 +115,7 @@ GET('https://github.com/ETymch/Econometrics_2023/raw/main/Datasets/totals.xlsx',
 
 ```
 ## Response [https://raw.githubusercontent.com/ETymch/Econometrics_2023/main/Datasets/totals.xlsx]
-##   Date: 2023-09-21 13:02
+##   Date: 2023-09-21 13:06
 ##   Status: 200
 ##   Content-Type: application/octet-stream
 ##   Size: 11.2 kB
