@@ -79,7 +79,7 @@ GET('https://github.com/ETymch/Econometrics_2023/raw/main/Datasets/difference.xl
 
 ```
 ## Response [https://raw.githubusercontent.com/ETymch/Econometrics_2023/main/Datasets/difference.xls]
-##   Date: 2023-09-21 12:03
+##   Date: 2023-09-21 13:02
 ##   Status: 200
 ##   Content-Type: application/octet-stream
 ##   Size: 58.9 kB
@@ -115,7 +115,7 @@ GET('https://github.com/ETymch/Econometrics_2023/raw/main/Datasets/totals.xlsx',
 
 ```
 ## Response [https://raw.githubusercontent.com/ETymch/Econometrics_2023/main/Datasets/totals.xlsx]
-##   Date: 2023-09-21 12:03
+##   Date: 2023-09-21 13:02
 ##   Status: 200
 ##   Content-Type: application/octet-stream
 ##   Size: 11.2 kB
@@ -191,6 +191,8 @@ colors <- c('#CEB09F','#9B1631','#71797E','#0A99C3', '#040273') # цвета п�
 colors_text <- c('#040273', '#0A99C3', '#71797E','#9B1631', '#CEB09F')
 ```
 
+**Важно!** Как и в прошлом материале, чтобы получить понимание, как всё работает, не запускайте код полностью. Запустите первые несколько строк. Попробкйте поменять параметры, получите интуицию, как и что работает, затем продолжайте добавлять строки кода. 
+
 Графики-бублики:
 
 
@@ -237,7 +239,7 @@ plot_1 + plot_2 + # комбинация графиков 1 и 2
 
 <center>
 
-![1+1](https://raw.githubusercontent.com/ETymch/Econometrics_2023/a610fe2d0751b143a302658b18ac4d3f08f44d3b/Pics/export_21_22.svg)
+![1+1](https://github.com/ETymch/Econometrics_2023/raw/main/Pics/export_21_22.svg)
 </center>
 
 Добавим сверху историю.
@@ -279,7 +281,7 @@ plot_3 / (plot_1 + plot_2) +
 
 <center>
 
-![final](https://raw.githubusercontent.com/ETymch/Econometrics_2023/a610fe2d0751b143a302658b18ac4d3f08f44d3b/Pics/export_trans.svg)
+![final](https://github.com/ETymch/Econometrics_2023/raw/main/Pics/export_trans.svg)
 
 </center>
 
