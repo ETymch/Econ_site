@@ -39,7 +39,7 @@ font_add(family = 'HSE Sans',
          bolditalic = 'HSESans-SemiBlod.otf'
 ) # Установка HSE Sans, вместо bolditalic я загружаю полужирный.
 
-colors_plt <- c("#FFD54E", "#A80002") # Ц
+colors_plt <- c("#FFD54E", "#A80002") # Цвета
 ```
 
 Загрузим данные из нашей базы:
@@ -90,3 +90,39 @@ dat %>%
 ![plot](https://github.com/ETymch/Econometrics_2023/raw/main/Pics/plot_fc.svg)
 
 </center>
+
+Получается хороший, но не до конца аккуратный граффик. Можно заметить, что красные и жёлтые точки на графике перемешаны. В идеале мы, конечно же, хотим, чтобы эти точки были собраны в группы вокруг соответствующих ящиков с усами. Сделать это легко. Нужно всего-навсего заменить `geom_jitter` на `geom_point`. Давайте попробуем!
+
+
+```r
+dat %>%
+  ggplot(aes(x = name, y = value, fill = UNFR, color = UNFR)) + 
+  geom_point(position=position_jitterdodge(), alpha = 0.25) + # теперь у нас просто точки, с указанной выкладкой
+  theme_minimal(base_family = 'HSE Sans') +
+  geom_boxplot(alpha = 0.01, fill = 'transparent') # да, в R 'transparent' - это тоже цвет.
+  scale_color_manual(values = colors_plt) +
+  theme(axis.title.y = element_blank(), 
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        axis.title.x = element_blank(),
+        legend.title = element_blank(),
+        plot.title = element_markdown(family = "HSE Sans", color = "#333333", 
+                                      size = 9, face = 'bold', hjust = 0.5
+        ),
+        plot.caption = element_text(face = 'italic'),
+        legend.position = 'none') +
+  labs(y = '',
+       title = 'Пересмотры прогнозов экономического роста на 2023 г. для <b style="color:#FFD54E">дружественных</b> и <b style="color:#A80002">недружественных</b> стран',
+       caption = 'Прогнозы IMF')
+```
+
+<center>
+
+![plot](https://raw.githubusercontent.com/ETymch/Econometrics_2023/6726cfbe06d965f4cdabf06f0df3eb2236266885/Pics/plot_boxes_dots_new.svg)
+
+</center>
+
+На мой взгляд, так получше.
+
+Как мы видим, `ggplot2` позволяет сочетать на графике элементы! А это открывает большой простор для творчества. Придумывайте свои комбинации геометрий, работайте с цветом - создавайте уникальные визуализации.
