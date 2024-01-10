@@ -60,9 +60,9 @@ data %>% head %>% kableExtra::kable()
 Предустановки для всех графиков:
 
 ```{r}
-color_1 <- c('#ff6361', '#ffa600')
-alpha_default <- 0.4
-density_size= 7
+color_1 <- c('#412A29', '#F6B20E')
+alpha_default <- 0.7
+density_size = 7
 ```
 
 Делайте графики с кастомными цветами! Палитры на любой вкус можно сгенерировать или выбрать, например, на [Data color picker](https://www.learnui.design/tools/data-color-picker.html) или [Pigment](https://pigment.shapefactory.co/)
@@ -167,19 +167,19 @@ d <-
       ymax = `Медиана, еда` + size_cross,
       color = `Мусульманская страна`),
     inherit.aes = F,
-    width = .6,# попробуйте изменить этот параметр
+    width = .3,# попробуйте изменить этот параметр
     size = .8,# попробуйте изменить этот параметр
     show.legend = F,
     alpha = alpha_default + 0.3
   ) +
   geom_errorbar(data = summary_data,# Горизонтальная часть.
     aes(y = `Медиана, еда`,
-      xmin = `Медиана, алк` - size_cross * 0.3,
-      xmax = `Медиана, алк` + size_cross * 0.3,
+      xmin = `Медиана, алк` - size_cross * 0.25,
+      xmax = `Медиана, алк` + size_cross * 0.25,
       color = `Мусульманская страна`),
     inherit.aes = F,
     width = 0.8,
-    size = 0.8,
+    size = 1,
     show.legend = F,# попробуйте изменить этот параметр
     alpha = alpha_default + 0.3 # попробуйте изменить этот параметр
   )
@@ -193,7 +193,7 @@ ggsave(file = "density_multilevel.png", dpi = 500,
 
 <center>
 
-![plot](https://github.com/ETymch/Econometrics_2023/blob/main/Pics/density_multilevel.png?raw=true)
+![plot](https://github.com/ETymch/Econometrics_2023/blob/main/Pics/density_multilevel_1.png?raw=true)
 
 </center>
 
