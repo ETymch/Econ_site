@@ -28,7 +28,7 @@ tags: ["Статистика"]
 
 ## R
 
-* [Хорошее пособие, если начинаешь знакомиться с R](https://www.amazon.com/Data-Science-Analytics-Machine-Learning/dp/012824271X]).
+* [Хорошее пособие, если начинаешь знакомиться с R](https://www.sciencedirect.com/book/9780128242711/data-science-analytics-and-machine-learning-with-r).
 * [Книжка, благодаря которой я запустил этот сайт](https://bookdown.org/yihui/bookdown/).
 * [Книжка](https://link.springer.com/book/10.1007/978-981-15-2035-8) о том, как решать простые задачки по экономике в R.
 * Блог [Седрика Шерера](https://www.cedricscherer.com/top/dataviz/) о том, как делать красоту в ggplot2.
