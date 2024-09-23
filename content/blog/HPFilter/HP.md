@@ -158,7 +158,7 @@ end
 
 * Для `\(t = 1\)`:
 
-`$$y_1 = (1 + \lambda) \hat{y}_1 - 2 \lambda \hat{y}^p_2 + \lambda \hat{y}^p_3$$`
+`$$y_1 = (1 + \lambda) \hat{y}_1 - 2 \lambda \hat{y}_2 + \lambda \hat{y}_3$$`
 
 * Для `\(t = 2\)`:
 
